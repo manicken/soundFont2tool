@@ -7,3 +7,12 @@ G:\_git\soundFont2tool\Soundfont2Tool\obj\Debug\Soundfont2Tool.csproj.GenerateRe
 G:\_git\soundFont2tool\Soundfont2Tool\obj\Debug\Soundfont2Tool.csproj.CoreCompileInputs.cache
 G:\_git\soundFont2tool\Soundfont2Tool\obj\Debug\Soundfont2Tool.exe
 G:\_git\soundFont2tool\Soundfont2Tool\obj\Debug\Soundfont2Tool.pdb
+G:\_git\soundFont2tool\bin\Debug\Soundfont2Tool.exe
+G:\_git\soundFont2tool\bin\Debug\Soundfont2Tool.pdb
+G:\_git\soundFont2tool\obj\Debug\Soundfont2Tool.csproj.AssemblyReference.cache
+G:\_git\soundFont2tool\obj\Debug\Soundfont2Tool.MainForm.resources
+G:\_git\soundFont2tool\obj\Debug\Soundfont2Tool.Properties.Resources.resources
+G:\_git\soundFont2tool\obj\Debug\Soundfont2Tool.csproj.GenerateResource.cache
+G:\_git\soundFont2tool\obj\Debug\Soundfont2Tool.csproj.CoreCompileInputs.cache
+G:\_git\soundFont2tool\obj\Debug\Soundfont2Tool.exe
+G:\_git\soundFont2tool\obj\Debug\Soundfont2Tool.pdb

@@ -8,6 +8,8 @@ using System.Text;
 using System.Windows.Forms;
 using System.IO;
 
+using Soundfont2;
+
 namespace Soundfont2Tool
 {
     public partial class MainForm : Form
@@ -24,10 +26,15 @@ namespace Soundfont2Tool
             using (OpenFileDialog ofd = new OpenFileDialog())
             {
                 ofd.Filter = "Soundfont2 files|*.sf2";
-                ofd.InitialDirectory = @"G:\_Projects\soundfonts\New folder\OBIE1";
+                ofd.InitialDirectory = @"G:\_Projects\SF2_SoundFonts-master";
                 if (ofd.ShowDialog() != DialogResult.OK) return;
                 filePath = ofd.FileName;
             }
+            ReadAndShowSoundFontInfo(filePath);
+        }
+
+        private void ReadAndShowSoundFontInfo(string filePath)
+        {
             using (FileStream fs = new FileStream(filePath, FileMode.Open))
             {
                 using (BinaryReader br = new BinaryReader(fs))
@@ -38,7 +45,7 @@ namespace Soundfont2Tool
                         MessageBox.Show("this is not a RIFF fileformat");
                         return;
                     }
-                    
+
                     UInt32 dataSize = br.ReadUInt32();
 
                     string sfbkTag = new string(br.ReadChars(4));
@@ -56,7 +63,7 @@ namespace Soundfont2Tool
                         secondFOURCC = new string(br.ReadChars(4));
 
                     }
-                    
+
 
 
                     rtxt.AppendLine(riffTag);
@@ -67,7 +74,30 @@ namespace Soundfont2Tool
             }
         }
 
-        
+        private void btnListFilesInFir_Click(object sender, EventArgs e)
+        {
+            using (FolderBrowserDialog fbd = new FolderBrowserDialog())
+            {
+                fbd.RootFolder = Environment.SpecialFolder.MyComputer;
+                fbd.SelectedPath = @"G:\_Projects\SF2_SoundFonts-master";
+                if (fbd.ShowDialog() != DialogResult.OK) return;
+
+                string[] files = Directory.GetFiles(fbd.SelectedPath, "*.sf2");
+                int maxWidth = 0;
+                foreach (string file in files)
+                {
+                    int w = Path.GetFileName(file).Length;
+                    if (w > maxWidth) maxWidth = w;
+                }
+                int divisior = 4;
+                for (int i = 0;i<files.Length;i++)
+                {
+                    FileInfo fi = new FileInfo(files[i]);
+                    rtxt.AppendLine(fi.Name.PadRight(maxWidth) + "  " + fi.Length.ToString().PadLeft(10) + " % "+ divisior .ToString()+ " = " + (fi.Length % divisior).ToString());
+                    rtxt.AppendLine("".PadLeft(maxWidth+10+7+3, '-'));
+                }
+            }
+        }
     }
 
     public static class Extensions
