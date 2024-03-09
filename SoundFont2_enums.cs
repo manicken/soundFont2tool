@@ -16,7 +16,7 @@ namespace Soundfont2
     /// @see "4.5 SoundFont 2 RIFF File Format Type Definitions".
     /// In SoundFont Technical Specification 2.04.
     /// </summary>
-    enum SFSampleLink : uint16_t
+    public enum SFSampleLink : uint16_t
     {
         /// <summary>Mono sample</summary>
         monoSample = 1,
@@ -43,7 +43,7 @@ namespace Soundfont2
     /// @see "8.1.2 Generator Enumerators Defined".
     /// In SoundFont Technical Specification 2.04.
     /// </summary>
-    enum SFGenerator : uint16_t
+    public enum SFGenerator : uint16_t
     {
         startAddrsOffset = 0,
         endAddrsOffset = 1,
@@ -108,7 +108,7 @@ namespace Soundfont2
     /// @see "8.2.1. Source Enumerator Controller Palettes".
     /// In SoundFont Technical Specification 2.04.
     /// </summary>
-    enum SFGeneralController : uint8_t
+    public enum SFGeneralController : uint8_t
     {
         noController = 0,
         noteOnVelocity = 2,
@@ -131,7 +131,7 @@ namespace Soundfont2
     /// which is a kind of Modulator Source Enumerators.
     /// @see General MIDI Level 2 Recommended Practice (RP024).
     /// </summary>
-    enum SFMidiController : uint8_t
+    public enum SFMidiController : uint8_t
     {
         kBankSelect = 0,
         kModulationDepth,
@@ -270,7 +270,7 @@ namespace Soundfont2
     /// @see "8.2 Modulator Source Enumerators".
     /// In SoundFont Technical Specification 2.04.
     /// </summary>
-    enum SFControllerPalette : uint8_t
+    public enum SFControllerPalette : uint8_t
     {
         generalController = 0,
         midiController = 1
@@ -283,7 +283,7 @@ namespace Soundfont2
     /// @see "8.2 Modulator Source Enumerators".
     /// In SoundFont Technical Specification 2.04.
     /// </summary>
-    enum SFControllerDirection : uint8_t
+    public enum SFControllerDirection : uint8_t
     {
         increase = 0,
         decrease = 1
@@ -296,7 +296,7 @@ namespace Soundfont2
     /// @see "8.2 Modulator Source Enumerators".
     /// In SoundFont Technical Specification 2.04.
     /// </summary>
-    enum SFControllerPolarity : uint8_t
+    public enum SFControllerPolarity : uint8_t
     {
         unipolar = 0,
         bipolar = 1
@@ -309,7 +309,7 @@ namespace Soundfont2
     /// @see "8.2.4 Source Types".
     /// In SoundFont Technical Specification 2.04.
     /// </summary>
-    enum SFControllerType : uint8_t
+    public enum SFControllerType : uint8_t
     {
         linearType = 0,
         concaveType = 1,
@@ -324,7 +324,7 @@ namespace Soundfont2
     /// @see "8.3 Modulator Transform Enumerators".
     /// In SoundFont Technical Specification 2.04.
     /// </summary>
-    enum SFTransform : uint8_t
+    public enum SFTransform : uint8_t
     {
         linear = 0,
         absoluteValue = 2
@@ -333,7 +333,7 @@ namespace Soundfont2
     /// <summary>
     /// Values that represents the bit flags for the sampleModes generator.
     /// </summary>
-    enum SampleMode : uint16_t
+    public enum SampleMode : uint16_t
     {
         /// <summary>Indicates a sound reproduced with no loop.</summary> 
         kNoLoop = 0,
