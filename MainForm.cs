@@ -19,6 +19,7 @@ namespace Soundfont2Tool
         {
             sfReader = new Soundfont2_reader();
             InitializeComponent();
+            Debug.rtxt = rtxt;
         }
 
         private void btnOpenFile_Click(object sender, EventArgs e)
@@ -32,15 +33,19 @@ namespace Soundfont2Tool
                 if (ofd.ShowDialog() != DialogResult.OK) return;
                 filePath = ofd.FileName;
             }
+            ReadAndShowFile(filePath);
+        }
+        private void ReadAndShowFile(string filePath)
+        {
             if (sfReader.readFile(filePath) == false)
             {
                 rtxt.AppendLine(sfReader.lastError);
                 return;
             }
-            rtxt.AppendLine(sfReader.fileData.sfbk.info.ToString());
-
-            rtxt.AppendLine(sfReader.debugInfo);
-            
+            sfbk_rec sfbk = sfReader.fileData.sfbk;
+            //rtxt.AppendLine(sfbk.info.ToString());
+            //rtxt.AppendLine(sfbk.sdta.ToString());
+            rtxt.AppendLine(sfbk.pdta.ToString());
             //ReadAndShowSoundFontInfo(filePath);
         }
 
@@ -136,13 +141,50 @@ namespace Soundfont2Tool
                 }
             }
         }
-    }
 
-    public static class Extensions
-    {
-        public static void AppendLine(this RichTextBox thisRtxt, string text)
+        private void btnDirectOpen_Click(object sender, EventArgs e)
         {
-            thisRtxt.AppendText(text + Environment.NewLine);
+            ReadAndShowFile(@"G:\_Projects\SF2_SoundFonts-master\AWE ROM gm.sf2");
         }
     }
+}
+
+public static class Extensions
+{
+    public static void AppendLine(this RichTextBox thisRtxt, Exception ex)
+    {
+        thisRtxt.AppendText(ex.ToString() + Environment.NewLine);
+    }
+    public static void AppendLine(this RichTextBox thisRtxt, string text)
+    {
+        thisRtxt.AppendText(text + Environment.NewLine);
+    }
+    public static void AppendCharArrayAsHex(this RichTextBox thisRtxt, char[] items)
+    {
+        string hexStr = "";
+        for (int i=0;i<items.Length;i++)
+        {
+            int item = items[i];
+            hexStr += item.ToString("X2");
+            if (i < items.Length - 1) hexStr += ", ";
+        }
+        thisRtxt.AppendLine(hexStr);
+    }
+
+    public static string GetAllToStrings<T>(this T[] thisObj)
+    {
+        if (thisObj == null) return "";
+        string r = "";
+        for (int i = 0; i < thisObj.Length; i++)
+        {
+            if (thisObj[i] == null) continue;
+            r += thisObj[i].ToString() + Environment.NewLine;
+        }
+        return r;
+    }
+}
+
+public static class Debug
+{
+    public static RichTextBox rtxt;
 }

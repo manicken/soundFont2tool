@@ -11,7 +11,6 @@ namespace Soundfont2
         public Soundfont2.RIFF fileData;
 
         public string lastError = "";
-        public string debugInfo = "";
 
         public Soundfont2_reader()
         {
@@ -20,12 +19,11 @@ namespace Soundfont2
 
         public bool readFile(string filePath)
         {
-            debugInfo = "";
             FileInfo fi = new FileInfo(filePath);
             fileData.size = fi.Length;
             using (FileStream fs = new FileStream(filePath, FileMode.Open, FileAccess.Read))
             {
-                using (BinaryReader br = new BinaryReader(fs))
+                using (BinaryReader br = new BinaryReader(fs, Encoding.UTF8))
                 {
                     string riffTag = new String(br.ReadChars(4));
                     if (riffTag != "RIFF")
@@ -56,19 +54,21 @@ namespace Soundfont2
                         {
                             fileData.sfbk.info.size = listSize;
                             
-                            if (readInfoBlock(br, fs.Position + listSize + 4) == false) return false;
+                            if (readInfoBlock(br/*, fs.Position + listSize - 4*/) == false) return false;
 
-                            return true; // early return debug test
+                            //return true; // early return debug test
                         }
                         else if (listType == "sdta")
                         {
                             fileData.sfbk.sdta.size = listSize;
-                            read_sdta_block(br, fs.Position + listSize + 4);
+                            if (read_sdta_block(br/*, fs.Position + listSize + 4*/) == false) return false;
+
+                            //return true; // early return debug test
                         }
                         else if (listType == "pdta")
                         {
-                            fileData.sfbk.sdta.size = listSize;
-                            read_pdta_block(br, fs.Position + listSize + 4);
+                            fileData.sfbk.pdta.size = listSize;
+                            if (read_pdta_block(br/*, fs.Position + listSize + 4*/) == false) return false;
                         }
                     }
                     
@@ -78,90 +78,89 @@ namespace Soundfont2
             return true;
         }
 
-        private bool readInfoBlock(BinaryReader br, long endPos)
+        private bool readInfoBlock(BinaryReader br/*, long endPos*/)
         {
-            INFO info = fileData.sfbk.info;
-            debugInfo += "end pos: " + endPos.ToString() + "\r\n";
-            while (br.BaseStream.Position < endPos)
+            INFO info = fileData.sfbk.info; // simplify the usage
+
+            while (br.PeekChar() != -1)//br.BaseStream.Position < endPos)
             {
                 string type = new string(br.ReadChars(4));
-                debugInfo += "type: " + type + "\r\n";
+                Debug.rtxt.AppendLine("type: " + type);
                 if (type == "ifil")
                 {
                     br.BaseStream.Position += 4; // skip size
-                    //info.ifil = br.ReadUInt32();
                     
+                    //info.ifil = br.ReadUInt32();
                     info.ifil.major = br.ReadUInt16();
                     info.ifil.minor = br.ReadUInt16();
                 }
                 else if (type == "isng")
                 {
-                    br.BaseStream.Position += 4; // skip size
-                    info.isng = br.ReadZSTR(Encoding.UTF8);
-                    
-                    
-                    //info.isng = new string(br.ReadChars(size));
+                    //Debug.rtxt.AppendLine("isng:");
+                    info.isng = br.ReadStringUsingLeadingSize();
+                    //info.isng = br.ReadZSTR_SkippingLeadingSizeAndAdditionalZeroes();
                 }
                 else if (type == "INAM")
                 {
-                    //br.BaseStream.Position += 4; // skip size
-                    int size = Convert.ToInt32(br.ReadUInt32());
-                    debugInfo += "INAM size: " + size.ToString() + "\r\n";
-                    //info.INAM = br.ReadZSTR(Encoding.UTF8);
-                    info.INAM = new string(br.ReadChars(size));
+                    //Debug.rtxt.AppendLine("INAM:");
+                    info.INAM = br.ReadStringUsingLeadingSize();
+                    //info.INAM = br.ReadZSTR_SkippingLeadingSizeAndAdditionalZeroes();
                 }
                 else if (type == "irom")
                 {
-                    br.BaseStream.Position += 4; // skip size
-                    info.irom = br.ReadZSTR(Encoding.UTF8);
-                    //info.irom = new string(br.ReadChars(Convert.ToInt32(br.ReadUInt32())));
+                    //Debug.rtxt.AppendLine("irom:");
+                    info.irom = br.ReadStringUsingLeadingSize();
+                    //info.irom = br.ReadZSTR_SkippingLeadingSizeAndAdditionalZeroes();
                 }
                 else if (type == "iver")
                 {
                     br.BaseStream.Position += 4; // skip size
+                    
                     //info.iver = br.ReadUInt32(); // read both minor and major
-
                     info.iver.major = br.ReadUInt16();
                     info.iver.minor = br.ReadUInt16();
                 }
                 else if (type == "ICRD")
                 {
-                    br.BaseStream.Position += 4; // skip size
-                    info.ICRD = br.ReadZSTR(Encoding.UTF8);
-                    //info.ICRD = new string(br.ReadChars(Convert.ToInt32(br.ReadUInt32())));
+                    //Debug.rtxt.AppendLine("ICRD:");
+                    info.ICRD = br.ReadStringUsingLeadingSize();
+                    //info.ICRD = br.ReadZSTR_SkippingLeadingSizeAndAdditionalZeroes();
                 }
                 else if (type == "IENG")
                 {
-                    br.BaseStream.Position += 4; // skip size
-                    info.IENG = br.ReadZSTR(Encoding.UTF8);
-                    //info.IENG = new string(br.ReadChars(Convert.ToInt32(br.ReadUInt32())));
+                    //Debug.rtxt.AppendLine("IENG:");
+                    info.IENG = br.ReadStringUsingLeadingSize();
+                    //info.IENG = br.ReadZSTR_SkippingLeadingSizeAndAdditionalZeroes();
                 }
                 else if (type == "IPRD")
                 {
-                    br.BaseStream.Position += 4; // skip size
-                    info.IPRD = br.ReadZSTR(Encoding.UTF8);
-                    //info.IPRD = new string(br.ReadChars(Convert.ToInt32(br.ReadUInt32())));
+                    //Debug.rtxt.AppendLine("IPRD:");
+                    info.IPRD = br.ReadStringUsingLeadingSize();
+                    //info.IPRD = br.ReadZSTR_SkippingLeadingSizeAndAdditionalZeroes();
                 }
                 else if (type == "ICOP")
                 {
-                    br.BaseStream.Position += 4; // skip size
-                    info.ICOP = br.ReadZSTR(Encoding.UTF8);
-                    //info.ICOP = new string(br.ReadChars(Convert.ToInt32(br.ReadUInt32())));
+                    //Debug.rtxt.AppendLine("ICOP:");
+                    info.ICOP = br.ReadStringUsingLeadingSize();
+                    //info.ICOP = br.ReadZSTR_SkippingLeadingSizeAndAdditionalZeroes();
                 }
                 else if (type == "ICMT")
                 {
-                    br.BaseStream.Position += 4; // skip size
-                    info.ICMT = br.ReadZSTR(Encoding.UTF8);
-                    //info.ICMT = new string(br.ReadChars(Convert.ToInt32(br.ReadUInt32())));
+                    //Debug.rtxt.AppendLine("ICMT:");
+                    info.ICMT = br.ReadStringUsingLeadingSize();
+                    //info.ICMT = br.ReadZSTR_SkippingLeadingSizeAndAdditionalZeroes();
                 }
                 else if (type == "ISFT")
                 {
-                    br.BaseStream.Position += 4; // skip size
-                    info.ISFT = br.ReadZSTR(Encoding.UTF8);
-                    //info.ISFT = new string(br.ReadChars(Convert.ToInt32(br.ReadUInt32())));
+                    //Debug.rtxt.AppendLine("ISFT:");
+                    info.ISFT = br.ReadStringUsingLeadingSize();
+                    //info.ISFT = br.ReadZSTR_SkippingLeadingSizeAndAdditionalZeroes();
                 }
-                else
-                    debugInfo += "type not found:" + type + "\r\n";
+                else if (type == "LIST")
+                {
+                    br.BaseStream.Position -= 4; // skip back
+                    return true;
+                }
             }
             return true;
         }
@@ -171,34 +170,171 @@ namespace Soundfont2
         /// </summary>
         /// <param name="br"></param>
         /// <returns></returns>
-        private bool read_sdta_block(BinaryReader br, long endPos)
+        private bool read_sdta_block(BinaryReader br/*, long endPos*/)
         {
-            while (br.BaseStream.Position < endPos)
+            sdta_rec sdta = fileData.sfbk.sdta; // simplify the usage
+            while (br.PeekChar() != -1)
             {
                 string type = new string(br.ReadChars(4));
+                Debug.rtxt.AppendLine("sdta: " + type);
                 if (type == "smpl")
                 {
-
+                    sdta.smplSize = br.ReadUInt32();
+                    sdta.smpl = br.BaseStream.Position;
+                    br.BaseStream.Position += sdta.smplSize; // skip sample data
                 }
                 else if (type == "sm24")
                 {
-
+                    sdta.sm24Size = br.ReadUInt32();
+                    sdta.sm24 = br.BaseStream.Position;
+                    br.BaseStream.Position += sdta.sm24Size; // skip sample data
+                }
+                else if (type == "LIST")
+                {
+                    br.BaseStream.Position -= 4; // skip back
+                    return true;
                 }
             }
             return true;
         }
 
-        private bool read_pdta_block(BinaryReader br, long endPos)
+        private bool read_pdta_block(BinaryReader br/*, long endPos*/)
         {
-            while (br.BaseStream.Position < endPos)
+            pdta_rec pdta = fileData.sfbk.pdta; // simplify the usage
+            string type = "";
+            
+            while (br.PeekChar() != -1)
             {
-
+                try { type = new string(br.ReadChars(4)); }
+                catch (Exception ex) { return false; }
+                UInt32 size = br.ReadUInt32();
+                Debug.rtxt.AppendLine("pdta: " + type + ", size:" + size.ToString());
+                if (type == "phdr")
+                {
+                    pdta.phdr = new phdr_rec[size/phdr_rec.Size];
+                    for (int i=0;i<pdta.phdr.Length;i++)
+                    {
+                        pdta.phdr[i] = new phdr_rec(br);
+                    }
+                    //br.BaseStream.Position += size; // in development skip
+                }
+                else if (type == "pbag")
+                {
+                    pdta.pbag = new bag_rec[size/bag_rec.Size];
+                    for (int i = 0; i < pdta.pbag.Length; i++)
+                    {
+                        pdta.pbag[i] = new bag_rec(br);
+                    }
+                    //br.BaseStream.Position += size; // in development skip
+                }
+                else if (type == "pmod")
+                {
+                    pdta.pmod = new mod_rec[size/mod_rec.Size];
+                    for (int i = 0; i < pdta.pmod.Length; i++)
+                    {
+                        pdta.pmod[i] = new mod_rec(br);
+                    }
+                    //br.BaseStream.Position += size; // in development skip
+                }
+                else if (type == "pgen")
+                {
+                    pdta.pgen = new gen_rec[size/gen_rec.Size];
+                    for (int i = 0; i < pdta.pgen.Length; i++)
+                    {
+                        pdta.pgen[i] = new gen_rec(br);
+                    }
+                    //br.BaseStream.Position += size; // in development skip
+                }
+                else if (type == "inst")
+                {
+                    pdta.inst = new inst_rec[size/inst_rec.Size];
+                    for (int i = 0; i < pdta.inst.Length; i++)
+                    {
+                        pdta.inst[i] = new inst_rec(br);
+                    }
+                    //br.BaseStream.Position += size; // in development skip
+                }
+                else if (type == "ibag")
+                {
+                    pdta.ibag = new bag_rec[size/bag_rec.Size];
+                    for (int i = 0; i < pdta.ibag.Length; i++)
+                    {
+                        pdta.ibag[i] = new bag_rec(br);
+                    }
+                    //br.BaseStream.Position += size; // in development skip
+                }
+                else if (type == "imod")
+                {
+                    pdta.imod = new mod_rec[size/mod_rec.Size];
+                    for (int i = 0; i < pdta.imod.Length; i++)
+                    {
+                        pdta.imod[i] = new mod_rec(br);
+                    }
+                    //br.BaseStream.Position += size; // in development skip
+                }
+                else if (type == "igen")
+                {
+                    pdta.igen = new gen_rec[size/gen_rec.Size];
+                    for (int i = 0; i < pdta.igen.Length; i++)
+                    {
+                        pdta.igen[i] = new gen_rec(br);
+                    }
+                    //br.BaseStream.Position += size; // in development skip
+                }
+                else if (type == "shdr")
+                {
+                    pdta.shdr = new shdr_rec[size/shdr_rec.Size];
+                    Debug.rtxt.AppendLine($"shdr count: { pdta.shdr.Length}");
+                    for (int i = 0; i < pdta.shdr.Length; i++)
+                    {
+                        pdta.shdr[i] = new shdr_rec(br);
+                    }
+                    //br.BaseStream.Position += size; // in development skip
+                }
+                else if (type == "LIST") // failsafe
+                {
+                    br.BaseStream.Position -= 8; // skip back
+                    return true;
+                }
+                /*try
+                {
+                    int testNextRead = br.BaseStream.ReadByte();
+                    br.BaseStream.Position -= 1;
+                    if (testNextRead == -1) break;
+                }
+                catch (Exception ex) { Debug.rtxt.AppendLine(ex.ToString() + $"br.Lenght: {br.BaseStream.Length}, br.Position: {br.BaseStream.Position}"); return true; }*/
             }
             return true;
         }
     }
     public static class Extensions
     {
+        public static int IndexOf(this char[] thisCharArray, char val)
+        {
+            for (int i = 0; i < thisCharArray.Length; i++)
+                if (thisCharArray[i] == val) return i;
+            return -1;
+        }
+        public static string ReadStringUsingLeadingSize(this BinaryReader thisBr)
+        {
+            int size = Convert.ToInt32(thisBr.ReadUInt32());
+            char[] charArray = thisBr.ReadChars(size);
+            int indexOfZero = charArray.IndexOf('\0');
+            string str;
+            if (indexOfZero != -1)
+                str = new string(charArray, 0, indexOfZero);
+            else
+                str = new string(charArray);
+            return str;
+        }
+
+        public static string ReadZSTR_SkippingLeadingSizeAndAdditionalZeroes(this BinaryReader thisBr)
+        {
+            thisBr.BaseStream.Position += 4;
+            string ret = thisBr.ReadZSTR(Encoding.UTF8);
+            thisBr.SkipAdditionalZeroes();
+            return ret;
+        }
         public static string ReadZSTR(this BinaryReader thisBr, Encoding encoding)
         {
             using (MemoryStream ms = new MemoryStream())
@@ -209,6 +345,13 @@ namespace Soundfont2
                     ms.WriteByte(b);
                 }
                 return encoding.GetString(ms.ToArray());
+            }
+        }
+        public static void SkipAdditionalZeroes(this BinaryReader thisBr)
+        {
+            while (thisBr.PeekChar() == 0)
+            {
+                thisBr.ReadChar();
             }
         }
     }

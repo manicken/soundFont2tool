@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.IO;
 using BYTE = System.Byte;
 using CHAR = System.SByte;
 using WORD = System.UInt16;
@@ -111,19 +112,19 @@ namespace Soundfont2
         }
         public override string ToString()
         {
-            string ret = "*** Info *** \r\n";
-            ret += "size: "+ size.ToString() + "\r\n";
-            ret += "Soundfont version: " + ifil.ToString() +"\r\n";
-            ret += "Name: " + INAM + "\r\n";
-            ret += "SoundEngine: " + isng + "\r\n";
-            ret += "ROM: " + irom + "\r\n";
-            ret += "ROM ver: " + iver.ToString() + "\r\n";
-            ret += "Date: " + ICRD + "\r\n";
-            ret += "Credits: " + IENG + "\r\n";
-            ret += "Product: " + IPRD + "\r\n";
-            ret += "Copyright: " + ICOP + "\r\n";
-            ret += "Comment: " + ICMT + "\r\n";
-            ret += "Tools: " + ISFT + "\r\n";
+            string ret = Environment.NewLine;
+            ret += "*** Info *** ( size: "+ size.ToString() + " )" + Environment.NewLine;
+            ret += "Soundfont version: " + ifil.ToString() + Environment.NewLine;
+            ret += "Name: " + INAM + Environment.NewLine;
+            ret += "SoundEngine: " + isng + Environment.NewLine;
+            ret += "ROM: " + irom + Environment.NewLine;
+            ret += "ROM ver: " + iver.ToString() + Environment.NewLine;
+            ret += "Date: " + ICRD + Environment.NewLine;
+            ret += "Credits: " + IENG + Environment.NewLine;
+            ret += "Product: " + IPRD + Environment.NewLine;
+            ret += "Copyright: " + ICOP + Environment.NewLine;
+            ret += "Comment: " + ICMT + Environment.NewLine;
+            ret += "Tools: " + ISFT + Environment.NewLine;
             return ret;
         }
     }
@@ -133,10 +134,10 @@ namespace Soundfont2
     {
         public UInt32 size; // comes from parent LIST
         /// <summary>smpl data offset as from the beginning of the file</summary>
-        public UInt32 smpl;
+        public long smpl;
         public UInt32 smplSize;
         /// <summary>sm24 data offset as from the beginning of the file</summary>
-        public UInt32 sm24;
+        public long sm24;
         public UInt32 sm24Size;
         
         public sdta_rec()
@@ -145,6 +146,17 @@ namespace Soundfont2
             smpl = 0;
             sm24 = 0;
         }
+
+        public override string ToString()
+        {
+            string ret = Environment.NewLine;
+            ret += "*** Sample Data *** ( size: " + size.ToString() + " )" + Environment.NewLine;
+            ret += "smpl offset: " + smpl.ToString() + Environment.NewLine;
+            ret += "smpl size: " + smplSize.ToString() + Environment.NewLine;
+            ret += "sm24 offset: " + sm24.ToString() + Environment.NewLine;
+            ret += "sm24 size: " + sm24Size.ToString() + Environment.NewLine;
+            return ret;
+        }
     }
 
     /// <summary>preset data which contains the instrument and preset definitions </summary>
@@ -152,41 +164,66 @@ namespace Soundfont2
     {
         public UInt32 size; // comes from parent LIST
         /// <summary>The Preset Headers</summary>
-        public List<phdr_rec> phdr;
+        public phdr_rec[] phdr;
         /// <summary>The Preset Index list</summary>
-        public List<pbag_rec> pbag;
+        public bag_rec[] pbag;
         /// <summary>The Preset Modulator list</summary>
-        public List<pmod_rec> pmod;
+        public mod_rec[] pmod;
         /// <summary>The Preset Generator list</summary>
-        public List<pgen_rec> pgen;
+        public gen_rec[] pgen;
         /// <summary>The Instrument Names and Indices</summary>
-        public List<inst_rec> inst;
+        public inst_rec[] inst;
         /// <summary>The Instrument Index list</summary>
-        public List<ibag_rec> ibag;
+        public bag_rec[] ibag;
         /// <summary>The Instrument Modulator list</summary>
-        public List<imod_rec> imod;
+        public mod_rec[] imod;
         /// <summary>The Instrument Generator list</summary>
-        public List<igen_rec> igen;
+        public gen_rec[] igen;
         /// <summary>The Sample Headers</summary>
-        public List<shdr_rec> shdr;
+        public shdr_rec[] shdr;
 
         public pdta_rec()
         {
-            phdr = new List<phdr_rec>();
-            pbag = new List<pbag_rec>();
-            pmod = new List<pmod_rec>();
-            pgen = new List<pgen_rec>();
-            inst = new List<inst_rec>();
-            ibag = new List<ibag_rec>();
-            imod = new List<imod_rec>();
-            igen = new List<igen_rec>();
-            shdr = new List<shdr_rec>();
+            phdr = new phdr_rec[0];
+            pbag = new bag_rec[0];
+            pmod = new mod_rec[0];
+            pgen = new gen_rec[0];
+            inst = new inst_rec[0];
+            ibag = new bag_rec[0];
+            imod = new mod_rec[0];
+            igen = new gen_rec[0];
+            shdr = new shdr_rec[0];
+        }
+        public override string ToString()
+        {
+            string ret = Environment.NewLine;
+            ret += "*** Preset Data *** ( size: " + size.ToString() + " )" + Environment.NewLine;
+            ret += "phdr count: " + phdr.Length + Environment.NewLine;
+            //ret += phdr.GetAllToStrings();
+            ret += "pbag count: " + pbag.Length + Environment.NewLine;
+            //ret += pbag.GetAllToStrings();
+            ret += "pmod count: " + pmod.Length + Environment.NewLine;
+            //ret += pmod.GetAllToStrings();
+            ret += "pgen count: " + pgen.Length + Environment.NewLine;
+            //ret += pgen.GetAllToStrings();
+            ret += "inst count: " + inst.Length + Environment.NewLine;
+            ret += inst.GetAllToStrings();
+            ret += "ibag count: " + ibag.Length + Environment.NewLine;
+            //ret += ibag.GetAllToStrings();
+            ret += "imod count: " + imod.Length + Environment.NewLine;
+            //ret += imod.GetAllToStrings();
+            ret += "igen count: " + igen.Length + Environment.NewLine;
+            //ret += igen.GetAllToStrings();
+            ret += "shdr count: " + shdr.Length + Environment.NewLine;
+            //ret += shdr.GetAllToStrings();
+            return ret;
         }
     }
 
-    /// <summary>preset data headers</summary>
+    /// <summary>preset data headers size is 38 bytes</summary>
     public class phdr_rec // 38 bytes each item
     {
+        public static int Size = 38;
         public string achPresetName; // max lenght of 20
         public WORD wPreset;
         public WORD wBank;
@@ -195,109 +232,120 @@ namespace Soundfont2
         public DWORD dwGenre;
         public DWORD dwMorphology;
 
-        public phdr_rec()
+        public phdr_rec(BinaryReader br)
         {
-            achPresetName = "";
-            wPreset = 0;
-            wBank = 0;
-            wPresetBagNdx = 0;
-            dwLibrary = 0;
-            dwGenre = 0;
-            dwMorphology = 0;
+            achPresetName = new string(br.ReadChars(20)).TrimEnd('\0');
+            wPreset = br.ReadUInt16();
+            wBank = br.ReadUInt16();
+            wPresetBagNdx = br.ReadUInt16();
+            dwLibrary = br.ReadUInt32();
+            dwGenre = br.ReadUInt32();
+            dwMorphology = br.ReadUInt32();
+        }
+        public override string ToString()
+        {
+            string r = "";
+            r += $"Name: {achPresetName.PadRight(20)}, bank: {wBank}, preset: {wPreset}, presetBag: {wPresetBagNdx}, library: {dwLibrary}, genre: {dwGenre}, morphology: {dwMorphology}";
+            return r;
         }
     }
-    public class pbag_rec
+    /// <summary>
+    /// size is 2+2 = 4 bytes
+    /// </summary>
+    public class bag_rec
     {
+        public static int Size = 4;
         public WORD wGenNdx;
         public WORD wModNdx;
 
-        public pbag_rec()
+        public bag_rec(BinaryReader br)
         {
-            wGenNdx = 0;
-            wModNdx = 0;
+            wGenNdx = br.ReadUInt16();
+            wModNdx = br.ReadUInt16();
+        }
+        public override string ToString()
+        {
+            string r = "";
+            r += $"Gen Ndx: {wGenNdx}, Mod Ndx: {wModNdx}";
+            return r;
         }
     }
-    /// <summary> sfModList</summary>
-    public class pmod_rec
+    /// <summary> size is 2+2+2+2+1 = 9 bytes + 1 padding</summary>
+    public class mod_rec
     {
+        public static int Size = 10;
         public SFModulator sfModSrcOper;
         public SFGenerator sfModDestOper;
         public SHORT modAmount;
         public SFModulator sfModAmtSrcOper;
         public SFTransform sfModTransOper;
 
-        public pmod_rec()
+        public mod_rec(BinaryReader br)
         {
-            sfModSrcOper = new SFModulator();
-            sfModDestOper = SFGenerator.startAddrsOffset;
-            modAmount = 0;
-            sfModAmtSrcOper = new SFModulator();
-            sfModTransOper = SFTransform.absoluteValue;
+            sfModSrcOper = new SFModulator(br);
+            sfModDestOper = (SFGenerator)br.ReadUInt16(); // SFGenerator.startAddrsOffset;
+            modAmount = br.ReadInt16();
+            sfModAmtSrcOper = new SFModulator(br);
+            sfModTransOper = (SFTransform)br.ReadByte();// .absoluteValue;
+            br.ReadByte(); // padding dummy read
+        }
+        public override string ToString()
+        {
+            string r = "";
+            r += $"Mod Src Oper: {sfModSrcOper}, Mod Dest Oper: {sfModDestOper}, mod amount: {modAmount}, Mod Amt Src Oper: {sfModAmtSrcOper}, Mod Trans Oper: {sfModTransOper}";
+            return r;
         }
     }
-    public class pgen_rec
+    /// <summary>
+    /// size is 2+2 = 4 bytes
+    /// </summary>
+    public class gen_rec
     {
+        public static int Size = 4;
         public SFGenerator sfGenOper;
-        public genAmountType genAmount;
+        public SF2GeneratorAmount genAmount;
         
-        public pgen_rec()
+        public gen_rec(BinaryReader br)
         {
-            sfGenOper = SFGenerator.startAddrsOffset;
-            genAmount = new genAmountType();
+            sfGenOper = (SFGenerator)br.ReadUInt16();
+            genAmount = new SF2GeneratorAmount(br.ReadUInt16());
+        }
+        public override string ToString()
+        {
+            string r = "";
+            r += $"Gen Oper: {sfGenOper}, Gen Amount: {genAmount}";
+            return r;
         }
     }
+    /// <summary>
+    /// size is 20+2 = 22 bytes
+    /// </summary>
     public class inst_rec
     {
+        public static int Size = 22;
         public string achInstName;
         public WORD wInstBagNdx;
 
-        public inst_rec()
+        public inst_rec(BinaryReader br)
         {
-            achInstName = "";
-            wInstBagNdx = 0;
+            char[] chName = br.ReadChars(20);
+            achInstName = new string(chName, 0, chName.IndexOf('\0'));
+            wInstBagNdx = br.ReadUInt16();
+        }
+        public override string ToString()
+        {
+            string r = "";
+            r += $"Inst Name: {achInstName}, Inst Bag Ndx: {wInstBagNdx}";
+            return r;
         }
     }
-    public class ibag_rec
-    {
-        public WORD wInstGenNdx;
-        public WORD wInstModNdx;
 
-        public ibag_rec()
-        {
-            wInstGenNdx = 0;
-            wInstModNdx = 0;
-        }
-    }
-    public class imod_rec
-    {
-        public SFModulator sfModSrcOper;
-        public SFGenerator sfModDestOper;
-        public SHORT modAmount;
-        public SFModulator sfModAmtSrcOper;
-        public SFTransform sfModTransOper;
-
-        public imod_rec()
-        {
-            sfModSrcOper = new SFModulator();
-            sfModDestOper = SFGenerator.startAddrsOffset;
-            modAmount = 0;
-            sfModAmtSrcOper = new SFModulator();
-            sfModTransOper = SFTransform.absoluteValue;
-        }
-    }
-    public class igen_rec
-    {
-        public SFGenerator sfGenOper;
-        public genAmountType genAmount;
-
-        public igen_rec()
-        {
-            sfGenOper = new SFGenerator();
-            genAmount = new genAmountType();
-        }
-    }
+    /// <summary>
+    /// size is 20+4*5+1+1+2+2 = 46
+    /// </summary>
     public class shdr_rec
     {
+        public static int Size = 46;
         public string achSampleName;
         public DWORD dwStart;
         public DWORD dwEnd;
@@ -306,24 +354,41 @@ namespace Soundfont2
         public DWORD dwSampleRate;
         public BYTE byOriginalKey;
         public CHAR chCorrection;
-        public WORD wSamepleLink;
+        public WORD wSampleLink;
         public SFSampleLink sfSampleType;
 
-        public shdr_rec()
+        public shdr_rec(BinaryReader br)
         {
-            achSampleName = "";
-            dwStart = 0;
-            dwEnd = 0;
-            dwStartloop = 0;
-            dwEndloop = 0;
-            dwSampleRate = 0;
-            byOriginalKey = 0;
-            chCorrection = 0;
-            wSamepleLink = 0;
-            sfSampleType = SFSampleLink.monoSample;
+            char[] chName = br.ReadChars(20);
+            achSampleName = new string(chName, 0, chName.IndexOf('\0'));
+            dwStart = br.ReadUInt32();
+            dwEnd = br.ReadUInt32(); ;
+            dwStartloop = br.ReadUInt32();
+            dwEndloop = br.ReadUInt32();
+            dwSampleRate = br.ReadUInt32();
+            byOriginalKey = br.ReadByte();
+            chCorrection = br.ReadSByte();
+            wSampleLink = br.ReadUInt16();
+            sfSampleType = (SFSampleLink)br.ReadUInt16();
+        }
+
+        public override string ToString()
+        {
+            string r = "";
+            /*System.Reflection.FieldInfo[] fields = this.GetType().GetFields(System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance);
+            Debug.rtxt.AppendLine(fields.Length.ToString());
+            foreach (System.Reflection.FieldInfo field in fields)
+                r += $"{field.Name} = {field.GetValue(this)}, ";*/
+            r += $"Name: {achSampleName.PadRight(20)}, SampleRate: {dwSampleRate}, Original Key: {byOriginalKey}, Correction: {chCorrection}";
+            r += $", Sample Link: {wSampleLink}, Sample Type: {sfSampleType}";
+            r += $", Start: {dwStart}, End: {dwEnd}, StartLoop: {dwStartloop}, EndLoop: {dwEndloop}";
+            return r;
         }
     }
 
+    /// <summary>
+    /// size is 2 bytes
+    /// </summary>
     public class SFModulator // this is a little overcomplicated as C# cannot handle bitfields
     {
         public UInt16 rawdata = 0;
@@ -357,40 +422,40 @@ namespace Soundfont2
             get { return (byte)(rawdata & 0x7F); }
             set { rawdata = (ushort)((rawdata & 0xFF80) | (value & 0x7F)); }
         }
-    }
 
-    public class rangesType
-    {
-        public BYTE byLo;
-        public BYTE byHi;
-        
-        public rangesType()
+        public SFModulator(BinaryReader br)
         {
-            byLo = 0;
-            byHi = 0;
+            rawdata = br.ReadUInt16();
+        }
+
+        public override string ToString()
+        {
+            return $"Type = {Type}, P = {P}, D = {D}, CC = {CC}, Index = {Index}";
         }
     }
 
-    public class genAmountType
+    /// <summary>SF2 spec v2.1 page 19 - Two bytes that can handle either two 8-bit values or a single 16-bit value</summary>
+	[System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Explicit)]
+    public class SF2GeneratorAmount
     {
-        public rangesType ranges;
-        public SHORT shAmount;
-        public WORD wAmount;
+        [System.Runtime.InteropServices.FieldOffset(0)] public byte LowByte;
+        [System.Runtime.InteropServices.FieldOffset(1)] public byte HighByte;
+        [System.Runtime.InteropServices.FieldOffset(0)] public short Amount;
+        [System.Runtime.InteropServices.FieldOffset(0)] public ushort UAmount;
 
-        public genAmountType()
+        public override string ToString()
         {
-            ranges = new rangesType();
-            shAmount = 0;
-            wAmount = 0;
+            return $"BLo = {LowByte}, BHi = {HighByte}, Sh = {Amount}, U = {UAmount}";
         }
-    }
 
-    class t
-    {
-        
-        void tf()
+        public SF2GeneratorAmount(BinaryReader br)
         {
-            SFModulator sfMod = new SFModulator();
+            Amount = br.ReadInt16();
+        }
+
+        public SF2GeneratorAmount(ushort value)
+        {
+            UAmount = value;
         }
     }
 }

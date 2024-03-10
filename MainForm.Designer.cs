@@ -33,6 +33,7 @@ namespace Soundfont2Tool
             this.rtxt = new System.Windows.Forms.RichTextBox();
             this.btnListFilesInFir = new System.Windows.Forms.Button();
             this.button1 = new System.Windows.Forms.Button();
+            this.btnDirectOpen = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // btnOpenFile
@@ -77,11 +78,22 @@ namespace Soundfont2Tool
             this.button1.UseVisualStyleBackColor = true;
             this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
+            // btnDirectOpen
+            // 
+            this.btnDirectOpen.Location = new System.Drawing.Point(104, 13);
+            this.btnDirectOpen.Name = "btnDirectOpen";
+            this.btnDirectOpen.Size = new System.Drawing.Size(75, 23);
+            this.btnDirectOpen.TabIndex = 4;
+            this.btnDirectOpen.Text = "direct open";
+            this.btnDirectOpen.UseVisualStyleBackColor = true;
+            this.btnDirectOpen.Click += new System.EventHandler(this.btnDirectOpen_Click);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.btnDirectOpen);
             this.Controls.Add(this.button1);
             this.Controls.Add(this.btnListFilesInFir);
             this.Controls.Add(this.rtxt);
@@ -98,6 +110,7 @@ namespace Soundfont2Tool
         private System.Windows.Forms.RichTextBox rtxt;
         private System.Windows.Forms.Button btnListFilesInFir;
         private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Button btnDirectOpen;
     }
 }
 
