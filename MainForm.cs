@@ -15,11 +15,22 @@ namespace Soundfont2Tool
     public partial class MainForm : Form
     {
         Soundfont2_reader sfReader;
+
+        private RtxtForm rtxtInst;
+        private RtxtForm rtxtIbag;
+        private RtxtForm rtxtIgen;
+        private RtxtForm rtxtImod;
+        private RtxtForm rtxtShdr;
         public MainForm()
         {
             sfReader = new Soundfont2_reader();
             InitializeComponent();
             Debug.rtxt = rtxt;
+            rtxtInst = new RtxtForm("Instruments");
+            rtxtIbag = new RtxtForm("ibag:s");
+            rtxtIgen = new RtxtForm("igen:s");
+            rtxtImod = new RtxtForm("imod:s");
+            rtxtShdr = new RtxtForm("shdr:s");
         }
 
         private void btnOpenFile_Click(object sender, EventArgs e)
@@ -43,10 +54,16 @@ namespace Soundfont2Tool
                 return;
             }
             sfbk_rec sfbk = sfReader.fileData.sfbk;
-            //rtxt.AppendLine(sfbk.info.ToString());
-            //rtxt.AppendLine(sfbk.sdta.ToString());
-            rtxt.AppendLine(sfbk.pdta.ToString());
+            rtxt.AppendLine(sfbk.info.ToString());
+            rtxt.AppendLine(sfbk.sdta.ToString());
+            //rtxt.AppendLine(sfbk.pdta.ToString());
             //ReadAndShowSoundFontInfo(filePath);
+            pdta_rec pdta = sfbk.pdta;
+            rtxtInst.Show("inst count: " + pdta.inst.Length + Environment.NewLine + pdta.inst.GetAllToStrings());
+            rtxtIbag.Show("ibag count: " + pdta.ibag.Length + Environment.NewLine + pdta.ibag.GetAllToStrings());
+            rtxtIgen.Show("igen count: " + pdta.igen.Length + Environment.NewLine + pdta.igen.GetAllToStrings());
+            //rtxtImod.Show("imod count: " + pdta.imod.Length + Environment.NewLine + pdta.imod.GetAllToStrings());
+            rtxtShdr.Show("shdr count: " + pdta.shdr.Length + Environment.NewLine + pdta.shdr.GetAllToStrings());
         }
 
         private void ReadAndShowSoundFontInfo(string filePath)
