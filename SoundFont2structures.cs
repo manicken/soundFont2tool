@@ -245,7 +245,7 @@ namespace Soundfont2
         public override string ToString()
         {
             string r = "";
-            r += $"Name: {achPresetName.PadRight(20)}, bank: {wBank}, preset: {wPreset}, presetBag: {wPresetBagNdx}, library: {dwLibrary}, genre: {dwGenre}, morphology: {dwMorphology}";
+            r += $"{achPresetName.PadRight(20)}, bank: {wBank}, preset: {wPreset}, presetBag: {wPresetBagNdx}, library: {dwLibrary}, genre: {dwGenre}, morphology: {dwMorphology}";
             return r;
         }
     }
@@ -257,16 +257,18 @@ namespace Soundfont2
         public static int Size = 4;
         public WORD wGenNdx;
         public WORD wModNdx;
+        public string type = "";
 
-        public bag_rec(BinaryReader br)
+        public bag_rec(BinaryReader br, string type)
         {
             wGenNdx = br.ReadUInt16();
             wModNdx = br.ReadUInt16();
+            this.type = type;
         }
         public override string ToString()
         {
             string r = "";
-            r += $"Gen Ndx: {wGenNdx}, Mod Ndx: {wModNdx}";
+            r += $"{type}Gen: {wGenNdx}, {type}Mod: {wModNdx}";
             return r;
         }
     }
@@ -313,7 +315,7 @@ namespace Soundfont2
         public override string ToString()
         {
             string r = "";
-            r += $"Gen Oper: {sfGenOper}, Gen Amount: {genAmount}";
+            r += $"{((ushort)sfGenOper).ToString().PadLeft(2)} {sfGenOper.ToString().PadRight(26)}, Val [ {genAmount.ToString(sfGenOper)} ]";
             return r;
         }
     }
@@ -335,7 +337,7 @@ namespace Soundfont2
         public override string ToString()
         {
             string r = "";
-            r += $"Inst Name: {achInstName}, Inst Bag Ndx: {wInstBagNdx}";
+            r += $"{achInstName.PadRight(20)}, ibag: {wInstBagNdx}";
             return r;
         }
     }
@@ -379,9 +381,11 @@ namespace Soundfont2
             Debug.rtxt.AppendLine(fields.Length.ToString());
             foreach (System.Reflection.FieldInfo field in fields)
                 r += $"{field.Name} = {field.GetValue(this)}, ";*/
-            r += $"Name: {achSampleName.PadRight(20)}, SampleRate: {dwSampleRate}, Original Key: {byOriginalKey}, Correction: {chCorrection}";
-            r += $", Sample Link: {wSampleLink}, Sample Type: {sfSampleType}";
+            r += $"{achSampleName.PadRight(20)}, Rate: {dwSampleRate}";
             r += $", Start: {dwStart}, End: {dwEnd}, StartLoop: {dwStartloop}, EndLoop: {dwEndloop}";
+            r += $", RootKey: {byOriginalKey}, Corr: {chCorrection}";
+            r += $", Link: {wSampleLink}, Type: {sfSampleType}";
+            
             return r;
         }
     }
@@ -445,7 +449,7 @@ namespace Soundfont2
 
         public override string ToString()
         {
-            return $"BLo = {LowByte}, BHi = {HighByte}, Sh = {Amount}, U = {UAmount}";
+            return $"BL:{LowByte.ToString().PadLeft(3)}, BH:{HighByte.ToString().PadLeft(3)}, Sh:{Amount.ToString().PadLeft(6)}, U:{UAmount.ToString().PadLeft(5)}";
         }
 
         public SF2GeneratorAmount(BinaryReader br)
@@ -457,5 +461,226 @@ namespace Soundfont2
         {
             UAmount = value;
         }
+
+        public string ToString(SFGenerator type)
+        {
+            string strVal = this.ToString();
+            if (type == SFGenerator.startAddrsOffset)
+            {
+                strVal = Amount.ToString();
+            }
+            else if (type == SFGenerator.endAddrsOffset)
+            {
+                strVal = Amount.ToString();
+            }
+            else if (type == SFGenerator.startloopAddrsOffset)
+            {
+                strVal = Amount.ToString();
+            }
+            else if (type == SFGenerator.endloopAddrsOffset)
+            {
+                strVal = Amount.ToString();
+            }
+            else if (type == SFGenerator.startAddrsCoarseOffset)
+            {
+                strVal = Amount.ToString();
+            }
+            else if (type == SFGenerator.modLfoToPitch)
+            {
+                strVal = Amount.ToString();
+            }
+            else if (type == SFGenerator.vibLfoToPitch)
+            {
+                strVal = Amount.ToString();
+            }
+            else if (type == SFGenerator.modEnvToPitch)
+            {
+                strVal = Amount.ToString();
+            }
+            else if (type == SFGenerator.initialFilterFc)
+            {
+                strVal = Amount.ToString();
+            }
+            else if (type == SFGenerator.initialFilterQ)
+            {
+                strVal = Amount.ToString();
+            }
+            else if (type == SFGenerator.modLfoToFilterFc)
+            {
+                strVal = Amount.ToString();
+            }
+            else if (type == SFGenerator.modEnvToFilterFc)
+            {
+                strVal = Amount.ToString();
+            }
+            else if (type == SFGenerator.endAddrsCoarseOffset)
+            {
+                strVal = Amount.ToString();
+            }
+            else if (type == SFGenerator.modLfoToVolume)
+            {
+                strVal = ((double)Amount/(double)10).ToString();
+            }
+            else if (type == SFGenerator.chorusEffectsSend)
+            {
+                strVal = ((double)Amount / (double)10).ToString();
+            }
+            else if (type == SFGenerator.reverbEffectsSend)
+            {
+                strVal = ((double)Amount / (double)10).ToString();
+            }
+            else if (type == SFGenerator.pan)
+            {
+                strVal = ((double)Amount / (double)10).ToString();
+            }
+            else if (type == SFGenerator.delayModLFO)
+            {
+                strVal = Math.Pow(2, (double)Amount/(double)1200).ToString();
+            }
+            else if (type == SFGenerator.freqModLFO)
+            {
+                strVal = (Math.Pow(2, (double)Amount / (double)1200)*8.176f).ToString();
+            }
+            else if (type == SFGenerator.delayVibLFO)
+            {
+                strVal = Math.Pow(2, (double)Amount / (double)1200).ToString();
+            }
+            else if (type == SFGenerator.freqVibLFO)
+            {
+                strVal = (Math.Pow(2, (double)Amount / (double)1200) * 8.176f).ToString();
+            }
+            else if (type == SFGenerator.delayModEnv)
+            {
+                strVal = Math.Pow(2, (double)Amount / (double)1200).ToString();
+            }
+            else if (type == SFGenerator.attackModEnv)
+            {
+                strVal = Math.Pow(2, (double)Amount / (double)1200).ToString();
+            }
+            else if (type == SFGenerator.holdModEnv)
+            {
+                strVal = Math.Pow(2, (double)Amount / (double)1200).ToString();
+            }
+            else if (type == SFGenerator.decayModEnv)
+            {
+                strVal = Math.Pow(2, (double)Amount / (double)1200).ToString();
+            }
+            else if (type == SFGenerator.sustainModEnv)
+            {
+                strVal = ((double)Amount / (double)10).ToString();
+            }
+            else if (type == SFGenerator.releaseModEnv)
+            {
+                strVal = Math.Pow(2, (double)Amount / (double)1200).ToString();
+            }
+            else if (type == SFGenerator.keynumToModEnvHold)
+            {
+                strVal = Amount.ToString();
+            }
+            else if (type == SFGenerator.keynumToModEnvDecay)
+            {
+                strVal = Amount.ToString();
+            }
+            else if (type == SFGenerator.delayVolEnv)
+            {
+                strVal = Math.Pow(2, (double)Amount / (double)1200).ToString();
+            }
+            else if (type == SFGenerator.attackVolEnv)
+            {
+                strVal = Math.Pow(2, (double)Amount / (double)1200).ToString();
+            }
+            else if (type == SFGenerator.holdVolEnv)
+            {
+                strVal = Math.Pow(2, (double)Amount / (double)1200).ToString();
+            }
+            else if (type == SFGenerator.decayVolEnv)
+            {
+                strVal = Math.Pow(2, (double)Amount / (double)1200).ToString();
+            }
+            else if (type == SFGenerator.sustainVolEnv)
+            {
+                strVal = ((double)Amount / (double)10).ToString();
+            }
+            else if (type == SFGenerator.releaseVolEnv)
+            {
+                strVal = Math.Pow(2, (double)Amount / (double)1200).ToString();
+            }
+            else if (type == SFGenerator.keynumToVolEnvHold)
+            {
+                strVal = Amount.ToString();
+            }
+            else if (type == SFGenerator.keynumToVolEnvDecay)
+            {
+                strVal = Amount.ToString();
+            }
+            else if (type == SFGenerator.instrument)
+            {
+                strVal = Amount.ToString();
+            }
+            else if (type == SFGenerator.keyRange)
+            {
+                strVal = $"L:{LowByte}, H:{HighByte}";
+            }
+            else if (type == SFGenerator.velRange)
+            {
+                strVal = $"H:{HighByte}, L:{LowByte}";
+            }
+            else if (type == SFGenerator.startloopAddrsCoarseOffset)
+            {
+                strVal = Amount.ToString();
+            }
+            else if (type == SFGenerator.keynum)
+            {
+                strVal = UAmount.ToString();
+            }
+            else if (type == SFGenerator.velocity)
+            {
+                strVal = UAmount.ToString();
+            }
+            else if (type == SFGenerator.initialAttenuation)
+            {
+                strVal = ((double)Amount / (double)10).ToString();
+            }
+            else if (type == SFGenerator.endloopAddrsCoarseOffset)
+            {
+                strVal = Amount.ToString();
+            }
+            else if (type == SFGenerator.coarseTune)
+            {
+                strVal = Amount.ToString();
+            }
+            else if (type == SFGenerator.fineTune)
+            {
+                strVal = Amount.ToString();
+            }
+            else if (type == SFGenerator.sampleID)
+            {
+                strVal = UAmount.ToString();
+            }
+            else if (type == SFGenerator.sampleModes)
+            {
+                
+                strVal = ((SampleMode)UAmount).ToString();
+            }
+            else if (type == SFGenerator.scaleTuning)
+            {
+                strVal = UAmount.ToString();
+            }
+            else if (type == SFGenerator.exclusiveClass)
+            {
+                strVal = UAmount.ToString();
+            }
+            else if (type == SFGenerator.overridingRootKey)
+            {
+                strVal = UAmount.ToString();
+            }
+            else if (type == SFGenerator.endOper)
+            {
+                strVal = Amount.ToString();
+            }
+            return strVal;
+        }
     }
+
+    
 }

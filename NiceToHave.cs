@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 
 namespace Soundfont2Tool
-{ 
+{
     public struct MyStruct
     {
         internal uint raw;
@@ -38,4 +38,88 @@ namespace Soundfont2Tool
             set { raw = (uint)(raw & ~mask3 | (value << loc3) & mask3); }
         }
     }
+
+    public class Test
+    {
+        public class CustomListItem
+        {
+            public string Text { get; set; }
+            public System.Drawing.Color Color { get; set; }
+
+            public CustomListItem(string text, System.Drawing.Color color)
+            {
+                Text = text;
+                Color = color;
+            }
+        }
+        System.Windows.Forms.ListBox listBox1;
+        void test()
+        {
+            listBox1 = new System.Windows.Forms.ListBox();
+            // Set the DrawMode of the ListBox to OwnerDrawFixed
+            // so that we can control the rendering of list items.
+            listBox1.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed;
+            listBox1.DrawItem += listBox1_DrawItem;
+
+            // Add some items to the ListBox
+            listBox1.Items.Add(new CustomListItem("Item 1", System.Drawing.Color.DarkMagenta));
+            listBox1.Items.Add(new CustomListItem("Item 2", System.Drawing.Color.Blue));
+            listBox1.Items.Add(new CustomListItem("Item 3", System.Drawing.Color.Green));
+        }
+        // Handle the DrawItem event of the ListBox
+        private void listBox1_DrawItem(object sender, System.Windows.Forms.DrawItemEventArgs e)
+        {
+            if (e.Index >= 0)
+            {
+                // Get the item from the ListBox
+                CustomListItem item = listBox1.Items[e.Index] as CustomListItem;
+
+                // Draw the background
+                e.DrawBackground();
+
+
+                // Create a brush with the color specified for the item
+                System.Drawing.Brush brush = new System.Drawing.SolidBrush(item.Color);
+
+                // Draw the item's text
+                e.Graphics.DrawString(item.Text, e.Font, brush, e.Bounds);
+                e.Graphics.DrawRectangle(new System.Drawing.Pen(System.Drawing.Color.Red), 0, 0, 10, 10);
+
+                // Dispose of the brush
+                brush.Dispose();
+
+                // If the ListBox has focus, draw the focus rectangle
+                e.DrawFocusRectangle();
+            }
+        }
+    }
+    /*
+    public class SFGeneratorItemBase
+    {
+
+    }
+    public class SFGeneratorItem
+    {
+        public string typeName;
+        public SFGeneratorItemType type;
+
+        //public Func<Tin, Tout> exec;
+        public Func<ushort, double> ushort2double;
+        public Func<short, double> short2double;
+        public Func<short, short> short2short;
+        public Func<short, ushort> short2ushort;
+        public Func<ushort, ushort> ushort2ushort;
+        public Func<ushort, short> ushort2short;
+    }
+    private void button1_Click_1(object sender, EventArgs e)
+    {
+        StringBuilder sb = new StringBuilder();
+
+        Dictionary<int, SFGeneratorItem> SFGeneratorDefs = new Dictionary<int, SFGeneratorItem>()
+            {
+                { 0, new SFGeneratorItem{typeName="test1", type=SFGeneratorItemType.short_t, ushort2double=(x) => (double)(x*x)}}
+            };
+
+
+    }*/
 }

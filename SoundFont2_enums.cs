@@ -100,6 +100,8 @@ namespace Soundfont2
         endOper = 60
     }
 
+    
+
     /// <summary>
     /// Values that represents the type of general controller.
     ///

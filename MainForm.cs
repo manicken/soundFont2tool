@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using System.IO;
+using System.Linq.Expressions;
 
 using Soundfont2;
 
@@ -16,22 +17,97 @@ namespace Soundfont2Tool
     {
         Soundfont2_reader sfReader;
 
-        private RtxtForm rtxtInst;
-        private RtxtForm rtxtIbag;
-        private RtxtForm rtxtIgen;
-        private RtxtForm rtxtImod;
-        private RtxtForm rtxtShdr;
+        private RichTextBoxForm rtxtformInst;
+        private RichTextBoxForm rtxtformIbag;
+        private RichTextBoxForm rtxtformIgen;
+        private RichTextBoxForm rtxtformImod;
+        private RichTextBoxForm rtxtformShdr;
+
+        private ListBoxForm lstboxformInst;
+        private ListBoxForm lstboxformIbag;
+        private ListBoxForm lstboxformIgen;
+        private ListBoxForm lstboxformImod;
+        private ListBoxForm lstboxformShdr;
         public MainForm()
         {
             sfReader = new Soundfont2_reader();
             InitializeComponent();
             Debug.rtxt = rtxt;
-            rtxtInst = new RtxtForm("Instruments");
-            rtxtIbag = new RtxtForm("ibag:s");
-            rtxtIgen = new RtxtForm("igen:s");
-            rtxtImod = new RtxtForm("imod:s");
-            rtxtShdr = new RtxtForm("shdr:s");
+            rtxtformInst = new RichTextBoxForm("Instruments");
+            rtxtformIbag = new RichTextBoxForm("ibag:s");
+            rtxtformIgen = new RichTextBoxForm("igen:s");
+            rtxtformImod = new RichTextBoxForm("imod:s");
+            rtxtformShdr = new RichTextBoxForm("shdr:s");
+
+            lstboxformInst = new ListBoxForm("Instruments");
+            lstboxformIbag = new ListBoxForm("ibag:s");
+            lstboxformIgen = new ListBoxForm("igen:s");
+            lstboxformImod = new ListBoxForm("imod:s");
+            lstboxformShdr = new ListBoxForm("shdr:s");
+
+            lstboxformInst.ListBoxFormItemSelected += Inst_LstBox_SelectedIndexChanged;
+            lstboxformIbag.ListBoxFormItemSelected += IBAG_LstBox_SelectedIndexChanged;
+            lstboxformIgen.ListBoxFormItemSelected += IGEN_LstBox_SelectedIndexChanged;
+            lstboxformShdr.ListBoxFormItemSelected += SHDR_LstBox_SelectedIndexChanged;
         }
+
+        private void Inst_LstBox_SelectedIndexChanged(object sender, ListItemWithIndex item)
+        {
+            lstboxformIbag.lstBox.ClearSelected();
+            lstboxformIgen.lstBox.ClearSelected();
+            int selectedIndex = item.index;
+            Debug.rtxt.AppendLine(selectedIndex.ToString());
+            skipIBAG_LstBox_SelectedIndexChanged = true;
+            skipIGEN_LstBox_SelectedIndexChanged = true;
+            skipSHDR_LstBox_SelectedIndexChanged = true;
+            pdta_rec pdta = sfReader.fileData.sfbk.pdta;
+            if (selectedIndex == pdta.inst.Length - 1)
+            {
+                lstboxformIbag.lstBox.SetSelected(pdta.ibag.Length-1, true);
+                lstboxformIgen.lstBox.SetSelected(pdta.igen.Length - 1, true);
+                skipIBAG_LstBox_SelectedIndexChanged = false;
+                skipIGEN_LstBox_SelectedIndexChanged = false;
+                skipSHDR_LstBox_SelectedIndexChanged = false;
+                return;
+            }
+
+            int start = pdta.inst[selectedIndex].wInstBagNdx;
+            int end = pdta.inst[selectedIndex+1].wInstBagNdx;
+            
+            for (int i = start; i < end; i++)
+            {
+                lstboxformIbag.lstBox.SetSelected(i, true);
+                int start2 = pdta.ibag[i].wGenNdx;
+                int end2 = pdta.ibag[i + 1].wGenNdx;
+                for (int i2 = start2; i2 < end2; i2++)
+                {
+                    lstboxformIgen.lstBox.SetSelected(i2, true);
+                }
+            }
+            skipIBAG_LstBox_SelectedIndexChanged = false;
+            skipIGEN_LstBox_SelectedIndexChanged = false;
+            skipSHDR_LstBox_SelectedIndexChanged = false;
+            //lstboxformInst.lstBox.SelectionMode = SelectionMode.MultiExtended;
+        }
+        bool skipIGEN_LstBox_SelectedIndexChanged = false;
+        bool skipIBAG_LstBox_SelectedIndexChanged = false;
+        bool skipSHDR_LstBox_SelectedIndexChanged = false;
+        private void IBAG_LstBox_SelectedIndexChanged(object sender, ListItemWithIndex item)
+        {
+            if (skipIBAG_LstBox_SelectedIndexChanged) return;
+            rtxt.AppendLine(item.text);
+        }
+
+        private void IGEN_LstBox_SelectedIndexChanged(object sender, ListItemWithIndex item)
+        {
+            if (skipIGEN_LstBox_SelectedIndexChanged) return;
+        }
+
+        private void SHDR_LstBox_SelectedIndexChanged(object sender, ListItemWithIndex item)
+        {
+            if (skipSHDR_LstBox_SelectedIndexChanged) return;
+        }
+
 
         private void btnOpenFile_Click(object sender, EventArgs e)
         {
@@ -59,11 +135,37 @@ namespace Soundfont2Tool
             //rtxt.AppendLine(sfbk.pdta.ToString());
             //ReadAndShowSoundFontInfo(filePath);
             pdta_rec pdta = sfbk.pdta;
-            rtxtInst.Show("inst count: " + pdta.inst.Length + Environment.NewLine + pdta.inst.GetAllToStrings());
-            rtxtIbag.Show("ibag count: " + pdta.ibag.Length + Environment.NewLine + pdta.ibag.GetAllToStrings());
-            rtxtIgen.Show("igen count: " + pdta.igen.Length + Environment.NewLine + pdta.igen.GetAllToStrings());
+            /*
+            rtxtformInst.Show("inst count: " + pdta.inst.Length + Environment.NewLine + pdta.inst.GetAllToStrings());
+            rtxtformIbag.Show("ibag count: " + pdta.ibag.Length + Environment.NewLine + pdta.ibag.GetAllToStrings());
+            rtxtformIgen.Show("igen count: " + pdta.igen.Length + Environment.NewLine + pdta.igen.GetAllToStrings());
             //rtxtImod.Show("imod count: " + pdta.imod.Length + Environment.NewLine + pdta.imod.GetAllToStrings());
-            rtxtShdr.Show("shdr count: " + pdta.shdr.Length + Environment.NewLine + pdta.shdr.GetAllToStrings());
+            rtxtformShdr.Show("shdr count: " + pdta.shdr.Length + Environment.NewLine + pdta.shdr.GetAllToStrings());
+            */
+            
+            lstboxformInst.Show("(" + pdta.inst.Length + ")", pdta.inst.GetAllToStringsAsArray());
+            lstboxformIbag.Show("(" + pdta.ibag.Length + ")", pdta.ibag.GetAllToStringsAsArray());
+            lstboxformIgen.Show("(" + pdta.igen.Length + ")", pdta.igen.GetAllToStringsAsArray());
+            //lstboxformImod.Show("(" + pdta.imod.Length+")", pdta.imod.GetAllToStringsAsArray());
+            lstboxformShdr.Show("(" + pdta.shdr.Length + ")", pdta.shdr.GetAllToStringsAsArray());
+
+            lstboxformInst.Width = 320;
+            lstboxformIbag.Width = 275;
+            lstboxformIgen.Width = 576;
+            lstboxformShdr.Width = 1110;
+            lstboxformInst.Top = 10;
+            lstboxformInst.Left = 10;
+            lstboxformIbag.Top = 10;
+            lstboxformIbag.Left = lstboxformInst.Right;
+            lstboxformIgen.Top = 10;
+            lstboxformIgen.Left = lstboxformIbag.Right;
+            lstboxformShdr.Top = lstboxformInst.Bottom;
+            lstboxformShdr.Left = 10;
+
+            this.TopMost = true;
+            //this.TopLevel = true;
+            this.TopMost = false;
+            //this.TopLevel = false;
         }
 
         private void ReadAndShowSoundFontInfo(string filePath)
@@ -163,41 +265,30 @@ namespace Soundfont2Tool
         {
             ReadAndShowFile(@"G:\_Projects\SF2_SoundFonts-master\AWE ROM gm.sf2");
         }
-    }
-}
-
-public static class Extensions
-{
-    public static void AppendLine(this RichTextBox thisRtxt, Exception ex)
-    {
-        thisRtxt.AppendText(ex.ToString() + Environment.NewLine);
-    }
-    public static void AppendLine(this RichTextBox thisRtxt, string text)
-    {
-        thisRtxt.AppendText(text + Environment.NewLine);
-    }
-    public static void AppendCharArrayAsHex(this RichTextBox thisRtxt, char[] items)
-    {
-        string hexStr = "";
-        for (int i=0;i<items.Length;i++)
+        public enum SFGeneratorItemType
         {
-            int item = items[i];
-            hexStr += item.ToString("X2");
-            if (i < items.Length - 1) hexStr += ", ";
+            ushort_t,
+            short_t,
+            two_bytes
         }
-        thisRtxt.AppendLine(hexStr);
-    }
-
-    public static string GetAllToStrings<T>(this T[] thisObj)
-    {
-        if (thisObj == null) return "";
-        string r = "";
-        for (int i = 0; i < thisObj.Length; i++)
+        
+        private void button1_Click_1(object sender, EventArgs e)
         {
-            if (thisObj[i] == null) continue;
-            r += thisObj[i].ToString() + Environment.NewLine;
+            string code = "";
+            string[] names = Enum.GetNames(typeof(SFGenerator));
+            code = "if (type == SFGenerator." + names[0] + ")" + Environment.NewLine + "{" + Environment.NewLine + Environment.NewLine + "}" + Environment.NewLine;
+            for (int i=1;i<names.Length;i++)
+            {
+                code += "else if (type == SFGenerator." + names[i] + ")" + Environment.NewLine + "{" + Environment.NewLine + Environment.NewLine + "}" + Environment.NewLine;
+            }
+            rtxt.Text = code;
+
         }
-        return r;
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            rtxt.AppendLine(Soundfont2to_cpp.getcpp(sfReader.fileData.sfbk));
+        }
     }
 }
 

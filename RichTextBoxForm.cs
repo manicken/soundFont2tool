@@ -9,10 +9,10 @@ using System.Windows.Forms;
 
 namespace Soundfont2Tool
 {
-    public partial class RtxtForm : Form
+    public partial class RichTextBoxForm : Form
     {
 
-        public RtxtForm(string title)
+        public RichTextBoxForm(string title)
         {
             InitializeComponent();
             this.Text = title;

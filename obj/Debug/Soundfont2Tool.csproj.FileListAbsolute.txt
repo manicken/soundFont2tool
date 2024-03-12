@@ -16,4 +16,6 @@ G:\_git\soundFont2tool\obj\Debug\Soundfont2Tool.csproj.CoreCompileInputs.cache
 G:\_git\soundFont2tool\obj\Debug\Soundfont2Tool.exe
 G:\_git\soundFont2tool\obj\Debug\Soundfont2Tool.pdb
 G:\_git\soundFont2tool\obj\Debug\Soundfont2Tool.csproj.AssemblyReference.cache
-G:\_git\soundFont2tool\obj\Debug\Soundfont2Tool.RtxtForm.resources
+G:\_git\soundFont2tool\obj\Debug\Soundfont2Tool.ListBoxForm.resources
+G:\_git\soundFont2tool\obj\Debug\Soundfont2Tool.RichTextBoxForm.resources
+G:\_git\soundFont2tool\bin\Debug\Soundfont2Tool.exe.config

@@ -85,7 +85,7 @@ namespace Soundfont2
             while (br.PeekChar() != -1)//br.BaseStream.Position < endPos)
             {
                 string type = new string(br.ReadChars(4));
-                Debug.rtxt.AppendLine("type: " + type);
+                //Debug.rtxt.AppendLine("type: " + type);
                 if (type == "ifil")
                 {
                     br.BaseStream.Position += 4; // skip size
@@ -176,7 +176,7 @@ namespace Soundfont2
             while (br.PeekChar() != -1)
             {
                 string type = new string(br.ReadChars(4));
-                Debug.rtxt.AppendLine("sdta: " + type);
+                //Debug.rtxt.AppendLine("sdta: " + type);
                 if (type == "smpl")
                 {
                     sdta.smplSize = br.ReadUInt32();
@@ -208,7 +208,7 @@ namespace Soundfont2
                 try { type = new string(br.ReadChars(4)); }
                 catch (Exception ex) { return false; }
                 UInt32 size = br.ReadUInt32();
-                Debug.rtxt.AppendLine("pdta: " + type + ", size:" + size.ToString());
+                //Debug.rtxt.AppendLine("pdta: " + type + ", size:" + size.ToString());
                 if (type == "phdr")
                 {
                     pdta.phdr = new phdr_rec[size/phdr_rec.Size];
@@ -223,7 +223,7 @@ namespace Soundfont2
                     pdta.pbag = new bag_rec[size/bag_rec.Size];
                     for (int i = 0; i < pdta.pbag.Length; i++)
                     {
-                        pdta.pbag[i] = new bag_rec(br);
+                        pdta.pbag[i] = new bag_rec(br,"p");
                     }
                     //br.BaseStream.Position += size; // in development skip
                 }
@@ -259,7 +259,7 @@ namespace Soundfont2
                     pdta.ibag = new bag_rec[size/bag_rec.Size];
                     for (int i = 0; i < pdta.ibag.Length; i++)
                     {
-                        pdta.ibag[i] = new bag_rec(br);
+                        pdta.ibag[i] = new bag_rec(br,"i");
                     }
                     //br.BaseStream.Position += size; // in development skip
                 }
@@ -284,7 +284,7 @@ namespace Soundfont2
                 else if (type == "shdr")
                 {
                     pdta.shdr = new shdr_rec[size/shdr_rec.Size];
-                    Debug.rtxt.AppendLine($"shdr count: { pdta.shdr.Length}");
+                    //Debug.rtxt.AppendLine($"shdr count: { pdta.shdr.Length}");
                     for (int i = 0; i < pdta.shdr.Length; i++)
                     {
                         pdta.shdr[i] = new shdr_rec(br);
