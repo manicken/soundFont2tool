@@ -15,6 +15,7 @@ namespace Soundfont2Tool
 {
     public partial class MainForm : Form
     {
+        string soundFontsRootDir = @"G:\_git\__TEENSY\SF2_SoundFonts-master";
         Soundfont2_reader sfReader;
 
         private RichTextBoxForm rtxtformInst;
@@ -55,6 +56,7 @@ namespace Soundfont2Tool
         {
             lstboxformIbag.lstBox.ClearSelected();
             lstboxformIgen.lstBox.ClearSelected();
+            lstboxformShdr.lstBox.ClearSelected();
             int selectedIndex = item.index;
             Debug.rtxt.AppendLine(selectedIndex.ToString());
             skipIBAG_LstBox_SelectedIndexChanged = true;
@@ -63,8 +65,9 @@ namespace Soundfont2Tool
             pdta_rec pdta = sfReader.fileData.sfbk.pdta;
             if (selectedIndex == pdta.inst.Length - 1)
             {
-                lstboxformIbag.lstBox.SetSelected(pdta.ibag.Length-1, true);
+                lstboxformIbag.lstBox.SetSelected(pdta.ibag.Length - 1, true);
                 lstboxformIgen.lstBox.SetSelected(pdta.igen.Length - 1, true);
+                lstboxformShdr.lstBox.SetSelected(pdta.shdr.Length - 1, true);
                 skipIBAG_LstBox_SelectedIndexChanged = false;
                 skipIGEN_LstBox_SelectedIndexChanged = false;
                 skipSHDR_LstBox_SelectedIndexChanged = false;
@@ -82,7 +85,13 @@ namespace Soundfont2Tool
                 for (int i2 = start2; i2 < end2; i2++)
                 {
                     lstboxformIgen.lstBox.SetSelected(i2, true);
+                    if (pdta.igen[i2].sfGenOper == SFGenerator.sampleID)
+                    {
+                        int sampleIndex = pdta.igen[i2].genAmount.UAmount;
+                        lstboxformShdr.lstBox.SetSelected(sampleIndex, true);
+                    }
                 }
+
             }
             skipIBAG_LstBox_SelectedIndexChanged = false;
             skipIGEN_LstBox_SelectedIndexChanged = false;
@@ -116,7 +125,7 @@ namespace Soundfont2Tool
             using (OpenFileDialog ofd = new OpenFileDialog())
             {
                 ofd.Filter = "Soundfont2 files|*.sf2";
-                ofd.InitialDirectory = @"G:\_Projects\SF2_SoundFonts-master";
+                ofd.InitialDirectory = soundFontsRootDir;
                 if (ofd.ShowDialog() != DialogResult.OK) return;
                 filePath = ofd.FileName;
             }
@@ -214,7 +223,7 @@ namespace Soundfont2Tool
             using (FolderBrowserDialog fbd = new FolderBrowserDialog())
             {
                 fbd.RootFolder = Environment.SpecialFolder.MyComputer;
-                fbd.SelectedPath = @"G:\_Projects\SF2_SoundFonts-master";
+                fbd.SelectedPath = soundFontsRootDir;
                 if (fbd.ShowDialog() != DialogResult.OK) return;
 
                 string[] files = Directory.GetFiles(fbd.SelectedPath, "*.sf2");
@@ -241,7 +250,7 @@ namespace Soundfont2Tool
             using (OpenFileDialog ofd = new OpenFileDialog())
             {
                 ofd.Filter = "Text files|*.txt";
-                ofd.InitialDirectory = @"G:\_Projects\SF2_SoundFonts-master";
+                ofd.InitialDirectory = soundFontsRootDir;
                 if (ofd.ShowDialog() != DialogResult.OK) return;
                 filePath = ofd.FileName;
             }
@@ -263,7 +272,7 @@ namespace Soundfont2Tool
 
         private void btnDirectOpen_Click(object sender, EventArgs e)
         {
-            ReadAndShowFile(@"G:\_Projects\SF2_SoundFonts-master\AWE ROM gm.sf2");
+            ReadAndShowFile(soundFontsRootDir + @"\AWE ROM gm.sf2");
         }
         public enum SFGeneratorItemType
         {

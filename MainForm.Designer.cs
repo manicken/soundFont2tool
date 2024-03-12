@@ -41,9 +41,9 @@ namespace Soundfont2Tool
             // 
             this.btnOpenFile.Location = new System.Drawing.Point(13, 13);
             this.btnOpenFile.Name = "btnOpenFile";
-            this.btnOpenFile.Size = new System.Drawing.Size(75, 23);
+            this.btnOpenFile.Size = new System.Drawing.Size(85, 23);
             this.btnOpenFile.TabIndex = 0;
-            this.btnOpenFile.Text = "Open File";
+            this.btnOpenFile.Text = "Open Any File";
             this.btnOpenFile.UseVisualStyleBackColor = true;
             this.btnOpenFile.Click += new System.EventHandler(this.btnOpenFile_Click);
             // 
@@ -61,21 +61,22 @@ namespace Soundfont2Tool
             // 
             // btnListFilesInFir
             // 
-            this.btnListFilesInFir.Location = new System.Drawing.Point(199, 12);
+            this.btnListFilesInFir.Location = new System.Drawing.Point(267, 12);
             this.btnListFilesInFir.Name = "btnListFilesInFir";
             this.btnListFilesInFir.Size = new System.Drawing.Size(75, 23);
             this.btnListFilesInFir.TabIndex = 2;
             this.btnListFilesInFir.Text = "list files in dir";
             this.btnListFilesInFir.UseVisualStyleBackColor = true;
+            this.btnListFilesInFir.Visible = false;
             this.btnListFilesInFir.Click += new System.EventHandler(this.btnListFilesInFir_Click);
             // 
             // btnDirectOpen
             // 
             this.btnDirectOpen.Location = new System.Drawing.Point(104, 13);
             this.btnDirectOpen.Name = "btnDirectOpen";
-            this.btnDirectOpen.Size = new System.Drawing.Size(75, 23);
+            this.btnDirectOpen.Size = new System.Drawing.Size(89, 23);
             this.btnDirectOpen.TabIndex = 4;
-            this.btnDirectOpen.Text = "direct open";
+            this.btnDirectOpen.Text = "dev test open";
             this.btnDirectOpen.UseVisualStyleBackColor = true;
             this.btnDirectOpen.Click += new System.EventHandler(this.btnDirectOpen_Click);
             // 
@@ -87,6 +88,7 @@ namespace Soundfont2Tool
             this.button1.TabIndex = 5;
             this.button1.Text = "generateSFGeneratorDictionaryDef";
             this.button1.UseVisualStyleBackColor = true;
+            this.button1.Visible = false;
             this.button1.Click += new System.EventHandler(this.button1_Click_1);
             // 
             // button2
@@ -97,6 +99,7 @@ namespace Soundfont2Tool
             this.button2.TabIndex = 6;
             this.button2.Text = "button2";
             this.button2.UseVisualStyleBackColor = true;
+            this.button2.Visible = false;
             this.button2.Click += new System.EventHandler(this.button2_Click);
             // 
             // MainForm

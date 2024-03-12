@@ -6,3 +6,6 @@ https://www.synthfont.com/sfspec24.pdf
 <br>
 https://www.synthfont.com/SFSPEC21.PDF
 <br>
+
+Main Screen:<br>
+![MainScreenDemo](/Screenshot.png)
