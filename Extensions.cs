@@ -49,4 +49,31 @@ public static class Extensions
         }
         return items;
     }
+    /*
+    public static int IndexOf<T>(this T[] thisCharArray, T val)
+    {
+        EqualityComparer<T> comparer = EqualityComparer<T>.Default;
+        for (int i = 0; i < array.Length; i++)
+        {
+            if (comparer.Equals(array[i], value))
+                return i;
+        }
+        return -1;
+    }
+    */
+
+    public static int IndexOf(this char[] thisCharArray, char val)
+    {
+        for (int i = 0; i < thisCharArray.Length; i++)
+            if (thisCharArray[i] == val) return i;
+        return -1;
+    }
+
+    public static int IndexOf(this byte[] thisCharArray, byte val)
+    {
+        for (int i = 0; i < thisCharArray.Length; i++)
+            if (thisCharArray[i] == val) return i;
+        return -1;
+    }
+
 }

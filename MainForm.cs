@@ -136,7 +136,7 @@ namespace Soundfont2Tool
             if (sfReader.readFile(filePath) == false)
             {
                 rtxt.AppendLine(sfReader.lastError);
-                return;
+                //return;
             }
             sfbk_rec sfbk = sfReader.fileData.sfbk;
             rtxt.AppendLine(sfbk.info.ToString());

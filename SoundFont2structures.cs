@@ -41,10 +41,11 @@ namespace Soundfont2
     {
         public UInt16 major;
         public UInt16 minor;
-        public sfVersionTag()
+        public sfVersionTag(BinaryReader br)
         {
-            major = 0;
-            minor = 0;
+            br.BaseStream.Position += 4;
+            major = br.ReadUInt16();
+            minor = br.ReadUInt16();
         }
         public sfVersionTag(UInt32 val)
         {
@@ -98,11 +99,9 @@ namespace Soundfont2
         public INFO()
         {
             size = 0;
-            ifil = new sfVersionTag();
             isng = "";
             INAM = "";
             irom = "";
-            iver = new sfVersionTag();
             ICRD = "";
             IENG = "";
             IPRD = "";
@@ -114,11 +113,13 @@ namespace Soundfont2
         {
             string ret = Environment.NewLine;
             ret += "*** Info *** ( size: "+ size.ToString() + " )" + Environment.NewLine;
-            ret += "Soundfont version: " + ifil.ToString() + Environment.NewLine;
+            if (ifil != null) // failsafe
+                ret += "Soundfont version: " + ifil.ToString() + Environment.NewLine;
             ret += "Name: " + INAM + Environment.NewLine;
             ret += "SoundEngine: " + isng + Environment.NewLine;
             ret += "ROM: " + irom + Environment.NewLine;
-            ret += "ROM ver: " + iver.ToString() + Environment.NewLine;
+            if (iver != null)
+                ret += "ROM ver: " + iver.ToString() + Environment.NewLine;
             ret += "Date: " + ICRD + Environment.NewLine;
             ret += "Credits: " + IENG + Environment.NewLine;
             ret += "Product: " + IPRD + Environment.NewLine;
@@ -129,32 +130,44 @@ namespace Soundfont2
         }
     }
 
+    public class smpl_rec
+    {
+        /// <summary>smpl data offset as from the beginning of the file</summary>
+        public long position = 0;
+        /// <summary>smpl data size</summary>
+        public UInt32 size = 0;
+
+        public smpl_rec(BinaryReader br)
+        {
+            size = br.ReadUInt32();
+            position = br.BaseStream.Position;
+        }
+
+        public override string ToString()
+        {
+            return $"position: {position}, size: {size}";
+        }
+    }
+
     /// <summary>sample data offset pointers (data is loaded from file on demand)</summary>
     public class sdta_rec
     {
         public UInt32 size; // comes from parent LIST
-        /// <summary>smpl data offset as from the beginning of the file</summary>
-        public long smpl;
-        public UInt32 smplSize;
-        /// <summary>sm24 data offset as from the beginning of the file</summary>
-        public long sm24;
-        public UInt32 sm24Size;
+        public smpl_rec smpl;
+        public smpl_rec sm24;
         
+
         public sdta_rec()
         {
             size = 0;
-            smpl = 0;
-            sm24 = 0;
         }
 
         public override string ToString()
         {
             string ret = Environment.NewLine;
             ret += "*** Sample Data *** ( size: " + size.ToString() + " )" + Environment.NewLine;
-            ret += "smpl offset: " + smpl.ToString() + Environment.NewLine;
-            ret += "smpl size: " + smplSize.ToString() + Environment.NewLine;
-            ret += "sm24 offset: " + sm24.ToString() + Environment.NewLine;
-            ret += "sm24 size: " + sm24Size.ToString() + Environment.NewLine;
+            if (smpl != null) ret += smpl.ToString() + Environment.NewLine;
+            if (sm24 != null) ret += sm24.ToString() + Environment.NewLine;
             return ret;
         }
     }
@@ -234,7 +247,7 @@ namespace Soundfont2
 
         public phdr_rec(BinaryReader br)
         {
-            achPresetName = new string(br.ReadChars(20)).TrimEnd('\0');
+            achPresetName = br.ReadString(20);
             wPreset = br.ReadUInt16();
             wBank = br.ReadUInt16();
             wPresetBagNdx = br.ReadUInt16();
@@ -330,8 +343,7 @@ namespace Soundfont2
 
         public inst_rec(BinaryReader br)
         {
-            char[] chName = br.ReadChars(20);
-            achInstName = new string(chName, 0, chName.IndexOf('\0'));
+            achInstName = br.ReadString(20);
             wInstBagNdx = br.ReadUInt16();
         }
         public override string ToString()
@@ -361,8 +373,7 @@ namespace Soundfont2
 
         public shdr_rec(BinaryReader br)
         {
-            char[] chName = br.ReadChars(20);
-            achSampleName = new string(chName, 0, chName.IndexOf('\0'));
+            achSampleName = br.ReadString(20);
             dwStart = br.ReadUInt32();
             dwEnd = br.ReadUInt32(); ;
             dwStartloop = br.ReadUInt32();
