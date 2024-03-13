@@ -120,7 +120,6 @@ namespace Soundfont2Tool
 
         private void btnOpenFile_Click(object sender, EventArgs e)
         {
-            rtxt.Clear();
             string filePath = "";
             using (OpenFileDialog ofd = new OpenFileDialog())
             {
@@ -133,6 +132,7 @@ namespace Soundfont2Tool
         }
         private void ReadAndShowFile(string filePath)
         {
+            rtxt.Clear();
             if (sfReader.readFile(filePath) == false)
             {
                 rtxt.AppendLine(sfReader.lastError);

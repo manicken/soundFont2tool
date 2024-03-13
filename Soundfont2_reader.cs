@@ -254,15 +254,21 @@ namespace Soundfont2
             try { 
                 byte[] bytes = thisBr.ReadBytes(maxCharCount);
                 char[] chars = new char[bytes.Length];
+                int indexOf = -1;
                 for (int i = 0; i < bytes.Length; i++)
                 {
-                    if (bytes[i] == 0) chars[i] = '\0';
-                    else if (bytes[i] > 127 | bytes[i] < 30) chars[i] = ' '; // sanitize toxic chars
+                    if (bytes[i] == 0)
+                    {
+                        indexOf = i;
+                        break;
+                    }
+                    else if (bytes[i] > 126 || bytes[i] < 32) // sanitize toxic chars
+                        chars[i] = ' '; 
                     else
                         chars[i] = (char)bytes[i];
                 }
 
-                int indexOf = chars.IndexOf('\0');
+                //int indexOf = chars.IndexOf('\0');
                 if (indexOf != -1)
                     return new string(chars, 0, indexOf);
                 else
