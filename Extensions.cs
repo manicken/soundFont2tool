@@ -69,11 +69,25 @@ public static class Extensions
         return -1;
     }
 
-    public static int IndexOf(this byte[] thisCharArray, byte val)
+    public static int IndexOf(this byte[] thisByteArray, byte val)
     {
-        for (int i = 0; i < thisCharArray.Length; i++)
-            if (thisCharArray[i] == val) return i;
+        for (int i = 0; i < thisByteArray.Length; i++)
+            if (thisByteArray[i] == val) return i;
         return -1;
+    }
+
+    public static string ToString(this byte[] thisByteArray, bool padValues)
+    {
+        string r = "[ ";
+        for (int i = 0; i < thisByteArray.Length; i++)
+        {
+            if (padValues)
+                r += thisByteArray[i].ToString().PadRight(3);
+            else
+                r += thisByteArray[i].ToString();
+            if (i < thisByteArray.Length - 1) r += ", ";
+        }
+        return r + " ]";
     }
 
 }

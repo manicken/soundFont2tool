@@ -89,7 +89,7 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
-    <EmbeddedResource Include="RtxtForm.resx">
+    <EmbeddedResource Include="RichTextBoxForm.resx">
       <DependentUpon>RichTextBoxForm.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="app.config" />

@@ -9,12 +9,33 @@ namespace Soundfont2
     public class Soundfont2_reader
     {
         public Soundfont2.RIFF fileData;
+        private string currFilePath;
+        bool fileRead = false;
 
         public string lastError = "";
 
         public Soundfont2_reader()
         {
             fileData = new RIFF();
+        }
+
+        public int getInstrumenSampleCount(int instIndex)
+        {
+            if (fileRead == false) return -1;
+            pdta_rec pdta = fileData.sfbk.pdta;
+            int sampleCount = 0;
+            int startIbagIndex = pdta.inst[instIndex].wInstBagNdx;
+            int endIbagIndex = pdta.inst[instIndex+1].wInstBagNdx;
+            for (int bi=startIbagIndex;bi<endIbagIndex;bi++)
+            {
+                int startIgenIndex = pdta.ibag[bi].wGenNdx;
+                int endIgenIndex = pdta.ibag[bi+1].wGenNdx;
+                for (int gi=startIgenIndex; gi<endIgenIndex; gi++)
+                {
+                    if (pdta.igen[gi].sfGenOper == SFGenerator.sampleID) sampleCount++;
+                }
+            }
+            return sampleCount;
         }
 
         public bool readFile(string filePath)
@@ -75,6 +96,8 @@ namespace Soundfont2
 
                 }
             }
+            fileRead = true;
+            currFilePath = filePath;
             return true;
         }
 
@@ -143,7 +166,7 @@ namespace Soundfont2
                 
 
                 UInt32 size = br.ReadUInt32();
-                Debug.rtxt.AppendLine("pdta: " + type + ", size:" + size.ToString());
+                //Debug.rtxt.AppendLine("pdta: " + type + ", size:" + size.ToString());
                 if (type == "phdr")
                 {
                     pdta.phdr = new phdr_rec[size/phdr_rec.Size];

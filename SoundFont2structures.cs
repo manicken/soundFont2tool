@@ -328,7 +328,7 @@ namespace Soundfont2
         public override string ToString()
         {
             string r = "";
-            r += $"{((ushort)sfGenOper).ToString().PadLeft(2)} {sfGenOper.ToString().PadRight(26)}, Val [ {genAmount.ToString(sfGenOper)} ]";
+            r += $"{((ushort)sfGenOper).ToString().PadLeft(2)} {sfGenOper.ToString().PadRight(26)} = {genAmount.ToString(sfGenOper)}";
             return r;
         }
     }
@@ -472,224 +472,157 @@ namespace Soundfont2
         {
             UAmount = value;
         }
+        /// <summary>Math.Pow(2, (double)Amount / (double)1200)</summary>
+        public double cents
+        {
+            get { return Math.Pow(2, (double)Amount / (double)1200); }
+        }
+        /// <summary>(double)Amount / (double)100</summary>
+        public double bells
+        {
+            get { return (double)Amount / (double)100; }
+        }
 
+        /// <summary>(double)Amount / (double)10</summary>
+        public double centibels
+        {
+            get { return (double)Amount / (double)10; }
+        }
+
+        /// <summary>32768 * Amount</summary>
+        public int coarse_offset
+        {
+            get { return 32768 * Amount; }
+        }
+        /// <summary>8.176f * Math.Pow(2, Amount / 1200)</summary>
+        public double absolute_cents
+        {
+            get { return 8.176f * Math.Pow(2, Amount / 1200); }
+        }
+
+        public SampleMode sample_mode
+        {
+            get { return ((SampleMode)UAmount); }
+        }
+
+        public byte[] sorted_range
+        {
+            get
+            {
+                if (LowByte < HighByte) return new byte[] { LowByte, HighByte };
+                else return new byte[] { HighByte, LowByte };
+            }
+        }
         public string ToString(SFGenerator type)
         {
-            string strVal = this.ToString();
             if (type == SFGenerator.startAddrsOffset)
-            {
-                strVal = Amount.ToString();
-            }
+                return Amount.ToString();
             else if (type == SFGenerator.endAddrsOffset)
-            {
-                strVal = Amount.ToString();
-            }
+                return Amount.ToString();
             else if (type == SFGenerator.startloopAddrsOffset)
-            {
-                strVal = Amount.ToString();
-            }
+                return Amount.ToString();
             else if (type == SFGenerator.endloopAddrsOffset)
-            {
-                strVal = Amount.ToString();
-            }
+                return Amount.ToString();
             else if (type == SFGenerator.startAddrsCoarseOffset)
-            {
-                strVal = Amount.ToString();
-            }
+                return Amount.ToString();
             else if (type == SFGenerator.modLfoToPitch)
-            {
-                strVal = Amount.ToString();
-            }
+                return Amount.ToString();
             else if (type == SFGenerator.vibLfoToPitch)
-            {
-                strVal = Amount.ToString();
-            }
+                return Amount.ToString();
             else if (type == SFGenerator.modEnvToPitch)
-            {
-                strVal = Amount.ToString();
-            }
+                return Amount.ToString();
             else if (type == SFGenerator.initialFilterFc)
-            {
-                strVal = Amount.ToString();
-            }
+                return Amount.ToString();
             else if (type == SFGenerator.initialFilterQ)
-            {
-                strVal = Amount.ToString();
-            }
+                return Amount.ToString();
             else if (type == SFGenerator.modLfoToFilterFc)
-            {
-                strVal = Amount.ToString();
-            }
+                return Amount.ToString();
             else if (type == SFGenerator.modEnvToFilterFc)
-            {
-                strVal = Amount.ToString();
-            }
+                return Amount.ToString();
             else if (type == SFGenerator.endAddrsCoarseOffset)
-            {
-                strVal = Amount.ToString();
-            }
+                return Amount.ToString();
             else if (type == SFGenerator.modLfoToVolume)
-            {
-                strVal = ((double)Amount/(double)10).ToString();
-            }
+                return centibels.ToString().Replace(',','.');
             else if (type == SFGenerator.chorusEffectsSend)
-            {
-                strVal = ((double)Amount / (double)10).ToString();
-            }
+                return centibels.ToString().Replace(',', '.');
             else if (type == SFGenerator.reverbEffectsSend)
-            {
-                strVal = ((double)Amount / (double)10).ToString();
-            }
+                return centibels.ToString().Replace(',', '.');
             else if (type == SFGenerator.pan)
-            {
-                strVal = ((double)Amount / (double)10).ToString();
-            }
+                return centibels.ToString().Replace(',', '.');
             else if (type == SFGenerator.delayModLFO)
-            {
-                strVal = Math.Pow(2, (double)Amount/(double)1200).ToString();
-            }
+                return cents.ToString().Replace(',', '.');
             else if (type == SFGenerator.freqModLFO)
-            {
-                strVal = (Math.Pow(2, (double)Amount / (double)1200)*8.176f).ToString();
-            }
+                return absolute_cents.ToString().Replace(',', '.');
             else if (type == SFGenerator.delayVibLFO)
-            {
-                strVal = Math.Pow(2, (double)Amount / (double)1200).ToString();
-            }
+                return cents.ToString().Replace(',', '.');
             else if (type == SFGenerator.freqVibLFO)
-            {
-                strVal = (Math.Pow(2, (double)Amount / (double)1200) * 8.176f).ToString();
-            }
+                return absolute_cents.ToString().Replace(',', '.');
             else if (type == SFGenerator.delayModEnv)
-            {
-                strVal = Math.Pow(2, (double)Amount / (double)1200).ToString();
-            }
+                return cents.ToString().Replace(',', '.');
             else if (type == SFGenerator.attackModEnv)
-            {
-                strVal = Math.Pow(2, (double)Amount / (double)1200).ToString();
-            }
+                return cents.ToString().Replace(',', '.');
             else if (type == SFGenerator.holdModEnv)
-            {
-                strVal = Math.Pow(2, (double)Amount / (double)1200).ToString();
-            }
+                return cents.ToString().Replace(',', '.');
             else if (type == SFGenerator.decayModEnv)
-            {
-                strVal = Math.Pow(2, (double)Amount / (double)1200).ToString();
-            }
+                return cents.ToString().Replace(',', '.');
             else if (type == SFGenerator.sustainModEnv)
-            {
-                strVal = ((double)Amount / (double)10).ToString();
-            }
+                return centibels.ToString().Replace(',', '.');
             else if (type == SFGenerator.releaseModEnv)
-            {
-                strVal = Math.Pow(2, (double)Amount / (double)1200).ToString();
-            }
+                return cents.ToString().Replace(',', '.');
             else if (type == SFGenerator.keynumToModEnvHold)
-            {
-                strVal = Amount.ToString();
-            }
+                return Amount.ToString();
             else if (type == SFGenerator.keynumToModEnvDecay)
-            {
-                strVal = Amount.ToString();
-            }
+                return Amount.ToString();
             else if (type == SFGenerator.delayVolEnv)
-            {
-                strVal = Math.Pow(2, (double)Amount / (double)1200).ToString();
-            }
+                return cents.ToString().Replace(',', '.');
             else if (type == SFGenerator.attackVolEnv)
-            {
-                strVal = Math.Pow(2, (double)Amount / (double)1200).ToString();
-            }
+                return cents.ToString().Replace(',', '.');
             else if (type == SFGenerator.holdVolEnv)
-            {
-                strVal = Math.Pow(2, (double)Amount / (double)1200).ToString();
-            }
+                return cents.ToString().Replace(',', '.');
             else if (type == SFGenerator.decayVolEnv)
-            {
-                strVal = Math.Pow(2, (double)Amount / (double)1200).ToString();
-            }
+                return cents.ToString().Replace(',', '.');
             else if (type == SFGenerator.sustainVolEnv)
-            {
-                strVal = ((double)Amount / (double)10).ToString();
-            }
+                return centibels.ToString().Replace(',', '.');
             else if (type == SFGenerator.releaseVolEnv)
-            {
-                strVal = Math.Pow(2, (double)Amount / (double)1200).ToString();
-            }
+                return cents.ToString().Replace(',', '.');
             else if (type == SFGenerator.keynumToVolEnvHold)
-            {
-                strVal = Amount.ToString();
-            }
+                return Amount.ToString();
             else if (type == SFGenerator.keynumToVolEnvDecay)
-            {
-                strVal = Amount.ToString();
-            }
+                return Amount.ToString();
             else if (type == SFGenerator.instrument)
-            {
-                strVal = Amount.ToString();
-            }
+                return Amount.ToString();
             else if (type == SFGenerator.keyRange)
-            {
-                strVal = $"L:{LowByte}, H:{HighByte}";
-            }
+                return sorted_range.ToString(false);// $"L:{LowByte}, H:{HighByte}";
             else if (type == SFGenerator.velRange)
-            {
-                strVal = $"H:{HighByte}, L:{LowByte}";
-            }
+                return sorted_range.ToString(false);//$"H:{HighByte}, L:{LowByte}";
             else if (type == SFGenerator.startloopAddrsCoarseOffset)
-            {
-                strVal = Amount.ToString();
-            }
+                return Amount.ToString();
             else if (type == SFGenerator.keynum)
-            {
-                strVal = UAmount.ToString();
-            }
+                return UAmount.ToString();
             else if (type == SFGenerator.velocity)
-            {
-                strVal = UAmount.ToString();
-            }
+                return UAmount.ToString();
             else if (type == SFGenerator.initialAttenuation)
-            {
-                strVal = ((double)Amount / (double)10).ToString();
-            }
+                return centibels.ToString().Replace(',', '.');
             else if (type == SFGenerator.endloopAddrsCoarseOffset)
-            {
-                strVal = Amount.ToString();
-            }
+                return Amount.ToString();
             else if (type == SFGenerator.coarseTune)
-            {
-                strVal = Amount.ToString();
-            }
+                return Amount.ToString();
             else if (type == SFGenerator.fineTune)
-            {
-                strVal = Amount.ToString();
-            }
+                return Amount.ToString();
             else if (type == SFGenerator.sampleID)
-            {
-                strVal = UAmount.ToString();
-            }
+                return UAmount.ToString();
             else if (type == SFGenerator.sampleModes)
-            {
-                
-                strVal = ((SampleMode)UAmount).ToString();
-            }
+                return sample_mode.ToString();
             else if (type == SFGenerator.scaleTuning)
-            {
-                strVal = UAmount.ToString();
-            }
+                return UAmount.ToString();
             else if (type == SFGenerator.exclusiveClass)
-            {
-                strVal = UAmount.ToString();
-            }
+                return UAmount.ToString();
             else if (type == SFGenerator.overridingRootKey)
-            {
-                strVal = UAmount.ToString();
-            }
+                return UAmount.ToString();
             else if (type == SFGenerator.endOper)
-            {
-                strVal = Amount.ToString();
-            }
-            return strVal;
+                return Amount.ToString();
+
+            return this.ToString();
         }
     }
 

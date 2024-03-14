@@ -34,22 +34,21 @@ namespace Soundfont2Tool
             // 
             // rtxt
             // 
-            this.rtxt.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.rtxt.Location = new System.Drawing.Point(12, 12);
+            this.rtxt.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.rtxt.Location = new System.Drawing.Point(0, 0);
             this.rtxt.Name = "rtxt";
-            this.rtxt.Size = new System.Drawing.Size(776, 426);
+            this.rtxt.Size = new System.Drawing.Size(800, 450);
             this.rtxt.TabIndex = 0;
             this.rtxt.Text = "";
+            this.rtxt.WordWrap = false;
             // 
-            // RtxtForm
+            // RichTextBoxForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
             this.Controls.Add(this.rtxt);
-            this.Name = "RtxtForm";
+            this.Name = "RichTextBoxForm";
             this.Text = "RtxtForm";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.RtxtForm_FormClosing);
             this.ResumeLayout(false);

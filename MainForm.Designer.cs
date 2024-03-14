@@ -29,105 +29,91 @@ namespace Soundfont2Tool
         /// </summary>
         private void InitializeComponent()
         {
-            this.btnOpenFile = new System.Windows.Forms.Button();
-            this.rtxt = new System.Windows.Forms.RichTextBox();
-            this.btnListFilesInFir = new System.Windows.Forms.Button();
-            this.btnDirectOpen = new System.Windows.Forms.Button();
-            this.button1 = new System.Windows.Forms.Button();
-            this.button2 = new System.Windows.Forms.Button();
+            this.menuStrip1 = new System.Windows.Forms.MenuStrip();
+            this.openAnyFileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.devTestOpenDirectToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.exportToCppTestinDevelopmentToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.otherDevToolsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.generateSFGeneratorTypeTestListToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
-            // btnOpenFile
+            // menuStrip1
             // 
-            this.btnOpenFile.Location = new System.Drawing.Point(13, 13);
-            this.btnOpenFile.Name = "btnOpenFile";
-            this.btnOpenFile.Size = new System.Drawing.Size(85, 23);
-            this.btnOpenFile.TabIndex = 0;
-            this.btnOpenFile.Text = "Open Any File";
-            this.btnOpenFile.UseVisualStyleBackColor = true;
-            this.btnOpenFile.Click += new System.EventHandler(this.btnOpenFile_Click);
+            this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.openAnyFileToolStripMenuItem,
+            this.devTestOpenDirectToolStripMenuItem,
+            this.exportToCppTestinDevelopmentToolStripMenuItem,
+            this.otherDevToolsToolStripMenuItem});
+            this.menuStrip1.Location = new System.Drawing.Point(0, 0);
+            this.menuStrip1.Name = "menuStrip1";
+            this.menuStrip1.Size = new System.Drawing.Size(816, 24);
+            this.menuStrip1.TabIndex = 7;
+            this.menuStrip1.Text = "menuStrip1";
             // 
-            // rtxt
+            // openAnyFileToolStripMenuItem
             // 
-            this.rtxt.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.rtxt.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.rtxt.Location = new System.Drawing.Point(12, 42);
-            this.rtxt.Name = "rtxt";
-            this.rtxt.Size = new System.Drawing.Size(524, 396);
-            this.rtxt.TabIndex = 1;
-            this.rtxt.Text = "";
+            this.openAnyFileToolStripMenuItem.Name = "openAnyFileToolStripMenuItem";
+            this.openAnyFileToolStripMenuItem.Size = new System.Drawing.Size(89, 20);
+            this.openAnyFileToolStripMenuItem.Text = "Open any file";
+            this.openAnyFileToolStripMenuItem.Click += new System.EventHandler(this.openAnyFileToolStripMenuItem_Click);
             // 
-            // btnListFilesInFir
+            // devTestOpenDirectToolStripMenuItem
             // 
-            this.btnListFilesInFir.Location = new System.Drawing.Point(267, 12);
-            this.btnListFilesInFir.Name = "btnListFilesInFir";
-            this.btnListFilesInFir.Size = new System.Drawing.Size(75, 23);
-            this.btnListFilesInFir.TabIndex = 2;
-            this.btnListFilesInFir.Text = "list files in dir";
-            this.btnListFilesInFir.UseVisualStyleBackColor = true;
-            this.btnListFilesInFir.Visible = false;
-            this.btnListFilesInFir.Click += new System.EventHandler(this.btnListFilesInFir_Click);
+            this.devTestOpenDirectToolStripMenuItem.Name = "devTestOpenDirectToolStripMenuItem";
+            this.devTestOpenDirectToolStripMenuItem.Size = new System.Drawing.Size(123, 20);
+            this.devTestOpenDirectToolStripMenuItem.Text = "dev test open direct";
+            this.devTestOpenDirectToolStripMenuItem.Click += new System.EventHandler(this.devTestOpenDirectToolStripMenuItem_Click);
             // 
-            // btnDirectOpen
+            // exportToCppTestinDevelopmentToolStripMenuItem
             // 
-            this.btnDirectOpen.Location = new System.Drawing.Point(104, 13);
-            this.btnDirectOpen.Name = "btnDirectOpen";
-            this.btnDirectOpen.Size = new System.Drawing.Size(89, 23);
-            this.btnDirectOpen.TabIndex = 4;
-            this.btnDirectOpen.Text = "dev test open";
-            this.btnDirectOpen.UseVisualStyleBackColor = true;
-            this.btnDirectOpen.Click += new System.EventHandler(this.btnDirectOpen_Click);
+            this.exportToCppTestinDevelopmentToolStripMenuItem.Name = "exportToCppTestinDevelopmentToolStripMenuItem";
+            this.exportToCppTestinDevelopmentToolStripMenuItem.Size = new System.Drawing.Size(206, 20);
+            this.exportToCppTestinDevelopmentToolStripMenuItem.Text = "export to cpp test (in development)";
+            this.exportToCppTestinDevelopmentToolStripMenuItem.Click += new System.EventHandler(this.exportToCppTestinDevelopmentToolStripMenuItem_Click);
             // 
-            // button1
+            // otherDevToolsToolStripMenuItem
             // 
-            this.button1.Location = new System.Drawing.Point(455, 12);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(81, 23);
-            this.button1.TabIndex = 5;
-            this.button1.Text = "generateSFGeneratorDictionaryDef";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Visible = false;
-            this.button1.Click += new System.EventHandler(this.button1_Click_1);
+            this.otherDevToolsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.generateSFGeneratorTypeTestListToolStripMenuItem});
+            this.otherDevToolsToolStripMenuItem.Name = "otherDevToolsToolStripMenuItem";
+            this.otherDevToolsToolStripMenuItem.Size = new System.Drawing.Size(98, 20);
+            this.otherDevToolsToolStripMenuItem.Text = "other dev tools";
             // 
-            // button2
+            // generateSFGeneratorTypeTestListToolStripMenuItem
             // 
-            this.button2.Location = new System.Drawing.Point(348, 12);
-            this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(75, 23);
-            this.button2.TabIndex = 6;
-            this.button2.Text = "button2";
-            this.button2.UseVisualStyleBackColor = true;
-            this.button2.Visible = false;
-            this.button2.Click += new System.EventHandler(this.button2_Click);
+            this.generateSFGeneratorTypeTestListToolStripMenuItem.Name = "generateSFGeneratorTypeTestListToolStripMenuItem";
+            this.generateSFGeneratorTypeTestListToolStripMenuItem.Size = new System.Drawing.Size(253, 22);
+            this.generateSFGeneratorTypeTestListToolStripMenuItem.Text = "generate SFGenerator type test list";
+            this.generateSFGeneratorTypeTestListToolStripMenuItem.Click += new System.EventHandler(this.generateSFGeneratorTypeTestListToolStripMenuItem_Click);
             // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(548, 450);
-            this.Controls.Add(this.button2);
-            this.Controls.Add(this.button1);
-            this.Controls.Add(this.btnDirectOpen);
-            this.Controls.Add(this.btnListFilesInFir);
-            this.Controls.Add(this.rtxt);
-            this.Controls.Add(this.btnOpenFile);
+            this.ClientSize = new System.Drawing.Size(816, 569);
+            this.Controls.Add(this.menuStrip1);
+            this.IsMdiContainer = true;
+            this.MainMenuStrip = this.menuStrip1;
             this.Name = "MainForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Soundfont 2 tool";
+            this.Shown += new System.EventHandler(this.MainForm_Shown);
+            this.Resize += new System.EventHandler(this.MainForm_Resize);
+            this.menuStrip1.ResumeLayout(false);
+            this.menuStrip1.PerformLayout();
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
         #endregion
-
-        private System.Windows.Forms.Button btnOpenFile;
-        private System.Windows.Forms.RichTextBox rtxt;
-        private System.Windows.Forms.Button btnListFilesInFir;
-        private System.Windows.Forms.Button btnDirectOpen;
-        private System.Windows.Forms.Button button1;
-        private System.Windows.Forms.Button button2;
+        private System.Windows.Forms.MenuStrip menuStrip1;
+        private System.Windows.Forms.ToolStripMenuItem openAnyFileToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem devTestOpenDirectToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem exportToCppTestinDevelopmentToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem otherDevToolsToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem generateSFGeneratorTypeTestListToolStripMenuItem;
     }
 }
 
