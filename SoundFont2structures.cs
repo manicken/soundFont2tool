@@ -497,7 +497,7 @@ namespace Soundfont2
         /// <summary>8.176f * Math.Pow(2, Amount / 1200)</summary>
         public double absolute_cents
         {
-            get { return 8.176f * Math.Pow(2, Amount / 1200); }
+            get { return 8.176f * Math.Pow(2, (double)Amount / (double)1200); }
         }
 
         public SampleMode sample_mode

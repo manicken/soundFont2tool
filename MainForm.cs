@@ -63,14 +63,14 @@ namespace Soundfont2Tool
         {
             rtxtformLog.TopLevel = false;
             rtxtformInfo.TopLevel = false;
-            rtxtformCppOutput.TopLevel = false;
+            
             lstboxformInst.TopLevel = false;
             lstboxformIbag.TopLevel = false;
             lstboxformIgen.TopLevel = false;
             lstboxformShdr.TopLevel = false;
             this.Controls.Add(rtxtformInfo);
             this.Controls.Add(rtxtformLog);
-            this.Controls.Add(rtxtformCppOutput);
+            
             this.Controls.Add(lstboxformInst);
             this.Controls.Add(lstboxformIbag);
             this.Controls.Add(lstboxformIgen);
