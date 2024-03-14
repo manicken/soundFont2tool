@@ -246,8 +246,11 @@ namespace Soundfont2Tool
             
             UpdateSizes();
             int newWidth = rtxtformLog.Width + lstboxformShdr.Width + 20;
+            int newHeight = (int)((double)Screen.PrimaryScreen.Bounds.Height * 0.8f);
             this.Left -= (newWidth - this.Width)/2; // center screen
+            this.Top -= (newHeight - this.Height) / 2;
             this.Width = newWidth;
+            this.Height = newHeight;
         }
 
         private void MainForm_Resize(object sender, EventArgs e)
