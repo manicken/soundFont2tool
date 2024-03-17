@@ -21,6 +21,7 @@ namespace Soundfont2Tool
         private RichTextBoxForm rtxtformInfo;
         private RichTextBoxForm rtxtformLog;
         private FastColoredTextBoxForm rtxtformCppOutput;
+        private FastColoredTextBoxForm rtxtformHppOutput;
 
         private ListBoxForm lstboxformInst;
         private ListBoxForm lstboxformIbag;
@@ -41,8 +42,11 @@ namespace Soundfont2Tool
 
             rtxtformInfo = new RichTextBoxForm("Info");
             rtxtformLog = new RichTextBoxForm("Debug Log");
-            rtxtformCppOutput = new FastColoredTextBoxForm("Export to Teensy - Development Test");
+            rtxtformCppOutput = new FastColoredTextBoxForm("Export to Teensy - Development Test - cpp file");
             rtxtformCppOutput.StartPosition = FormStartPosition.CenterScreen;
+            rtxtformHppOutput = new FastColoredTextBoxForm("Export to Teensy - Development Test - h file");
+            rtxtformHppOutput.StartPosition = FormStartPosition.CenterScreen;
+
             lstboxformInst = new ListBoxForm("Instruments");
             lstboxformIbag = new ListBoxForm("ibag:s");
             lstboxformIgen = new ListBoxForm("igen:s");
@@ -137,6 +141,18 @@ namespace Soundfont2Tool
         private void SHDR_LstBox_SelectedIndexChanged(object sender, ListItemWithIndex item)
         {
             if (skipSHDR_LstBox_SelectedIndexChanged) return;
+            lstboxformIgen.lstBox.ClearSelected();
+            for (int i = 0; i < sfReader.fileData.sfbk.pdta.igen.Length; i++)
+            {
+                if (sfReader.fileData.sfbk.pdta.igen[i].sfGenOper == SFGenerator.sampleID)
+                {
+                    if (sfReader.fileData.sfbk.pdta.igen[i].genAmount.UAmount == item.index)
+                    {
+                        lstboxformIgen.lstBox.SetSelected(i, true);
+                    }
+                }
+
+            }
         }
 
         private void InstrumentSelected(int index)
@@ -220,9 +236,13 @@ namespace Soundfont2Tool
         {
             int instrumentIndex = lstboxformInst.lstBox.SelectedIndex;
             if (instrumentIndex == -1) { MessageBox.Show("you have not selected any instrument!"); return; }
-            Soundfont2to_cpp.CodeFiles files = Soundfont2to_cpp.getcpp(sfReader.fileData.sfbk, instrumentIndex);
+            Soundfont2to_cpp.CodeFiles files = Soundfont2to_cpp.getcpp(sfReader, instrumentIndex);
+            rtxtformHppOutput.Show(files.hpp.data);
+            rtxtformHppOutput.Text = files.hpp.fileName;
+            rtxtformHppOutput.Top -= 32;
             rtxtformCppOutput.Show(files.cpp.data);
             rtxtformCppOutput.Text = files.cpp.fileName;
+            
         }
 
         private void devTestOpenDirectToolStripMenuItem_Click(object sender, EventArgs e)

@@ -14,10 +14,16 @@ namespace Soundfont2
 
         public string lastError = "";
 
+        public string FilePath
+        {
+            get { return currFilePath; }
+        }
         public Soundfont2_reader()
         {
             fileData = new RIFF();
         }
+
+
 
         public int getInstrumenSampleCount(int instIndex)
         {

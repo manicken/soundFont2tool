@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Globalization;
+using System.IO;
 
 namespace Soundfont2
 {
@@ -37,15 +38,20 @@ namespace Soundfont2
                 return hpp.ToString() + Environment.NewLine + cpp.ToString();
             }
         }
-        public static CodeFiles getcpp(sfbk_rec sfbk, int instrumentIndex)
+        public static CodeFiles getcpp(Soundfont2_reader sfFile, int instrumentIndex)
         {
-
+            sfbk_rec sfbk = sfFile.fileData.sfbk;
             string INSTRUMENT_NAME = SanitizeForCppVariableName(sfbk.pdta.inst[instrumentIndex].achInstName);
 
             CodeFiles files = new CodeFiles(INSTRUMENT_NAME);
 
             int startIbagIndex = sfbk.pdta.inst[instrumentIndex].wInstBagNdx;
             int endIbagIndex = sfbk.pdta.inst[instrumentIndex+1].wInstBagNdx;
+
+            FileStream fs = new FileStream(sfFile.FilePath, FileMode.Open, FileAccess.Read);
+
+            BinaryReader br = new BinaryReader(fs, Encoding.UTF8);
+                
 
             SF2GeneratorAmount get_gen_parameter_value(int ibagIndex, SFGenerator genType)
             {
@@ -265,14 +271,38 @@ namespace Soundfont2
                 int length_32 = (int)Math.Ceiling((double)length_16 / 2);
                 int pad_length = (length_32 % 128 == 0) ? 0 : (128 - length_32 % 128);
                 int ary_length = length_32 + pad_length;
-                Debug.rtxt.AppendLine($"name={sampleName}, length_16_orginal={shdr.dwEnd-shdr.dwStart}, length_16_cook={length_16}, pad_length={pad_length}");
+                Debug.rtxt.AppendLine($"name={sampleName}, length_16_orginal={shdr.dwEnd-shdr.dwStart}, length_16_cook={length_16}, pad_length={pad_length}, ary_length={ary_length}");
                 string ret = $"static const PROGMEM uint32_t {SAMPLE_ARRAY_NAME}[{ary_length}] = {{\n";
-
+                int line_width = 0;
+                fs.Seek(sfbk.sdta.smpl.position + shdr.dwStart*2, SeekOrigin.Begin);
+                for (int i=0; i< length_32; i++)
+                {
+                    UInt32 data = br.ReadUInt32();
+                    string strData = data.ToString("X4").PadLeft(8, '0');
+                    ret += $"0x{strData},";
+                    line_width++;
+                    if (line_width == 8)
+                    {
+                        line_width = 0;
+                        ret += "\n";
+                    }
+                }
+                while (pad_length > 0)
+                {
+                    ret += "0x00000000,";
+                    line_width++;
+                    if (line_width == 8)
+                    {
+                        line_width = 0;
+                        ret += "\n";
+                    }
+                    pad_length -= 4;
+                }
 
                 return ret + "};\n";
             }
             int sampleCount = endIbagIndex - startIbagIndex - 1;
-            files.cpp.data += $"#include \"{INSTRUMENT_NAME}\"\n\n";
+            files.cpp.data += $"#include \"{files.hpp.fileName}\"\n\n";
             for (int i=0; i < sampleCount; i++)
             {
                 files.cpp.data += "\n" + getSampleData(i) + "\n";
@@ -299,6 +329,15 @@ namespace Soundfont2
             files.cpp.data += $"static const uint8_t {INSTRUMENT_NAME}_ranges[] = {{{string.Join(", ", RANGE_DATA_ITEMS)}}};\n";
             files.cpp.data += "\n";
             files.cpp.data += $"const AudioSynthWavetable::instrument_data {INSTRUMENT_NAME} = {{{sampleCount}, {INSTRUMENT_NAME}_ranges, {INSTRUMENT_NAME}_samples }};\n\n";
+            br.Dispose();
+            fs.Dispose();
+
+            files.hpp.data = "#pragma once\n";
+            files.hpp.data += "#include <Audio.h>\n";
+            files.hpp.data += $"extern const AudioSynthWavetable::instrument_data {INSTRUMENT_NAME};\n";
+
+
+
             return files;
         }
     }
