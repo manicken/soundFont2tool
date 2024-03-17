@@ -20,7 +20,7 @@ namespace Soundfont2Tool
 
         private RichTextBoxForm rtxtformInfo;
         private RichTextBoxForm rtxtformLog;
-        private RichTextBoxForm rtxtformCppOutput;
+        private FastColoredTextBoxForm rtxtformCppOutput;
 
         private ListBoxForm lstboxformInst;
         private ListBoxForm lstboxformIbag;
@@ -40,7 +40,7 @@ namespace Soundfont2Tool
 
             rtxtformInfo = new RichTextBoxForm("Info");
             rtxtformLog = new RichTextBoxForm("Debug Log");
-            rtxtformCppOutput = new RichTextBoxForm("Export to Teensy - Development Test");
+            rtxtformCppOutput = new FastColoredTextBoxForm("Export to Teensy - Development Test");
             rtxtformCppOutput.StartPosition = FormStartPosition.CenterScreen;
             lstboxformInst = new ListBoxForm("Instruments");
             lstboxformIbag = new ListBoxForm("ibag:s");
