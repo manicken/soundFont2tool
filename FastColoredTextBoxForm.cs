@@ -39,7 +39,7 @@ namespace Soundfont2Tool
             //foreach (var r in fctb.GetRanges(@"\buint32_t\b", System.Text.RegularExpressions.RegexOptions.Singleline))
             {
                 e.ChangedRange.ClearStyle(BlueStyle);
-                e.ChangedRange.SetStyle(BlueStyle, @"\b(uint32_t|int32_t|int16_t|uint16_t)\b", System.Text.RegularExpressions.RegexOptions.Singleline);
+                e.ChangedRange.SetStyle(BlueStyle, @"\b(uint8_t|int8_t|uint16_t|int16_t|int32_t|uint32_t)\b", System.Text.RegularExpressions.RegexOptions.Singleline);
             }
         }
     }

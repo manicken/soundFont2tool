@@ -34,6 +34,7 @@ namespace Soundfont2Tool
 
         public MainForm()
         {
+
             sfReader = new Soundfont2_reader();
             InitializeComponent();
             globalHeigth = this.Height / 2;
@@ -220,7 +221,8 @@ namespace Soundfont2Tool
             int instrumentIndex = lstboxformInst.lstBox.SelectedIndex;
             if (instrumentIndex == -1) { MessageBox.Show("you have not selected any instrument!"); return; }
             Soundfont2to_cpp.CodeFiles files = Soundfont2to_cpp.getcpp(sfReader.fileData.sfbk, instrumentIndex);
-            rtxtformCppOutput.Show(files.ToString());
+            rtxtformCppOutput.Show(files.cpp.data);
+            rtxtformCppOutput.Text = files.cpp.fileName;
         }
 
         private void devTestOpenDirectToolStripMenuItem_Click(object sender, EventArgs e)
