@@ -125,8 +125,11 @@ namespace Soundfont2
                 {
                     int length = (int)(shdr.dwEnd - shdr.dwStart);
                     int cooked_loop_end = get_cooked_loop_end();
-                    if (get_sample_repeat(false) && cooked_loop_end < length)
+                    if (get_sample_repeat(false) && cooked_loop_end < length) {
+                        Debug.rtxt.AppendLine("cooked_loop_end < length:" + cooked_loop_end.ToString() + " < " + length.ToString());
                         length = cooked_loop_end + 1;
+                        
+                    }
                     return length;
                 }
                 int get_length_bits(int len)
@@ -137,7 +140,7 @@ namespace Soundfont2
                         length_bits += 1;
                         len = len >> 1;
                     }
-                    return len;
+                    return length_bits;
                 }
                 string SAMPLE_NAME = shdr.achSampleName.Trim(' ').Replace(' ', '_');
                 
