@@ -109,8 +109,9 @@ namespace Soundfont2Tool
             }
             InstrumentSelected(selectedIndex);
             
-            int sampleCount = sfReader.getInstrumenSampleCount(selectedIndex);
-            Debug.rtxt.AppendLine("sample count:" + sampleCount.ToString());
+            //int sampleCount = sfReader.getInstrumenSampleCount(selectedIndex);
+            //int sampleTotalSize = sfReader.getInstrumentTotalSampleSize(selectedIndex);
+            //Debug.rtxt.AppendLine("sample count:" + sampleCount.ToString() + ", sample size:" + (sampleTotalSize*2).ToString());
             skipIBAG_LstBox_SelectedIndexChanged = false;
             skipIGEN_LstBox_SelectedIndexChanged = false;
             skipSHDR_LstBox_SelectedIndexChanged = false;
@@ -205,7 +206,10 @@ namespace Soundfont2Tool
             pdta_rec pdta = sfbk.pdta;
 
             rtxtformInfo.Show();
-            lstboxformInst.Show("(" + pdta.inst.Length + ")", pdta.inst.GetAllToStringsAsArray());
+            string[] instList = pdta.inst.GetAllToStringsAsArray();
+            for (int i = 0; i < instList.Length-1; i++)
+                instList[i] += $", sample count:{sfReader.getInstrumenSampleCount(i).ToString().PadLeft(2)}, sampleSize(bytes):{(sfReader.getInstrumentTotalSampleSize(i)*2).ToString().PadLeft(8)}";
+            lstboxformInst.Show("(" + pdta.inst.Length + ")", instList);
             lstboxformIbag.Show("(" + pdta.ibag.Length + ")", pdta.ibag.GetAllToStringsAsArray());
             lstboxformIgen.Show("(" + pdta.igen.Length + ")", pdta.igen.GetAllToStringsAsArray());
             //lstboxformImod.Show("(" + pdta.imod.Length+")", pdta.imod.GetAllToStringsAsArray());

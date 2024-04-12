@@ -349,7 +349,7 @@ namespace Soundfont2
         public override string ToString()
         {
             string r = "";
-            r += $"{achInstName.PadRight(20)}, ibag: {wInstBagNdx}";
+            r += $"{achInstName.PadRight(20)}, ibag: {wInstBagNdx.ToString().PadRight(5)}";
             return r;
         }
     }

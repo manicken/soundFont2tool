@@ -43,6 +43,30 @@ namespace Soundfont2
             }
             return sampleCount;
         }
+        public int getInstrumentTotalSampleSize(int instIndex)
+        {
+            if (fileRead == false) return -1;
+            pdta_rec pdta = fileData.sfbk.pdta;
+            int sampleSize = 0;
+            int startIbagIndex = pdta.inst[instIndex].wInstBagNdx;
+            int endIbagIndex = pdta.inst[instIndex + 1].wInstBagNdx;
+            for (int bi = startIbagIndex; bi < endIbagIndex; bi++)
+            {
+                int startIgenIndex = pdta.ibag[bi].wGenNdx;
+                int endIgenIndex = pdta.ibag[bi + 1].wGenNdx;
+                for (int gi = startIgenIndex; gi < endIgenIndex; gi++)
+                {
+                    gen_rec gen = pdta.igen[gi];
+                    if (gen.sfGenOper == SFGenerator.sampleID)
+                    {
+                        shdr_rec shdr = pdta.shdr[gen.genAmount.UAmount];
+                        
+                        sampleSize += (int)(shdr.dwEnd - shdr.dwStart);
+                    }
+                }
+            }
+            return sampleSize;
+        }
 
         public bool readFile(string filePath)
         {
