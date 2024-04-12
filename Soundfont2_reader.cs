@@ -115,16 +115,16 @@ namespace Soundfont2
                 string type = new string(br.ReadCharsSafe(4));
                 //Debug.rtxt.AppendLine("type: " + type);
                 if (type == "ifil") info.ifil = new sfVersionTag(br);
-                else if (type == "isng") info.isng = br.ReadStringUsingLeadingSize();
-                else if (type == "INAM") info.INAM = br.ReadStringUsingLeadingSize();
-                else if (type == "irom") info.irom = br.ReadStringUsingLeadingSize();
+                else if (type == "isng") info.isng = br.ReadStringSafeUsingLeadingSize();
+                else if (type == "INAM") info.INAM = br.ReadStringSafeUsingLeadingSize();
+                else if (type == "irom") info.irom = br.ReadStringSafeUsingLeadingSize();
                 else if (type == "iver") info.iver = new sfVersionTag(br);
-                else if (type == "ICRD") info.ICRD = br.ReadStringUsingLeadingSize();
-                else if (type == "IENG") info.IENG = br.ReadStringUsingLeadingSize();
-                else if (type == "IPRD") info.IPRD = br.ReadStringUsingLeadingSize();
-                else if (type == "ICOP") info.ICOP = br.ReadStringUsingLeadingSize();
-                else if (type == "ICMT") info.ICMT = br.ReadStringUsingLeadingSize();
-                else if (type == "ISFT") info.ISFT = br.ReadStringUsingLeadingSize();
+                else if (type == "ICRD") info.ICRD = br.ReadStringSafeUsingLeadingSize();
+                else if (type == "IENG") info.IENG = br.ReadStringSafeUsingLeadingSize();
+                else if (type == "IPRD") info.IPRD = br.ReadStringSafeUsingLeadingSize();
+                else if (type == "ICOP") info.ICOP = br.ReadStringSafeUsingLeadingSize();
+                else if (type == "ICMT") info.ICMT = br.ReadStringSafeUsingLeadingSize();
+                else if (type == "ISFT") info.ISFT = br.ReadStringSafeUsingLeadingSize();
                 else if (type == "LIST") {
                     br.BaseStream.Position -= 4; // skip back
                     return true;
@@ -241,81 +241,7 @@ namespace Soundfont2
     }
     public static class Extensions
     {
-        public static string ReadStringUsingLeadingSize(this BinaryReader thisBr)
-        {
-            uint size = Convert.ToUInt32(thisBr.ReadUInt32());
-            //Debug.rtxt.AppendLine(size.ToString());
-            try
-            {
-                char[] charArray = thisBr.ReadCharsSafe((int)size);
-                int indexOfZero = charArray.IndexOf('\0');
-                string str;
-                if (indexOfZero != -1)
-                    str = new string(charArray, 0, indexOfZero);
-                else
-                    str = new string(charArray);
-                return str;
-            }
-            catch (Exception ex) { Debug.rtxt.AppendLine(ex.ToString()); return ""; }
-        }
-
-        public static string ReadZSTR_SkippingLeadingSizeAndAdditionalZeroes(this BinaryReader thisBr)
-        {
-            thisBr.BaseStream.Position += 4;
-            string ret = thisBr.ReadZSTR(Encoding.UTF8);
-            thisBr.SkipAdditionalZeroes();
-            return ret;
-        }
-        public static string ReadZSTR(this BinaryReader thisBr, Encoding encoding)
-        {
-            using (MemoryStream ms = new MemoryStream())
-            {
-                byte b;
-                while((b = thisBr.ReadByte()) != 0)
-                {
-                    ms.WriteByte(b);
-                }
-                return encoding.GetString(ms.ToArray());
-            }
-        }
-        public static void SkipAdditionalZeroes(this BinaryReader thisBr)
-        {
-            while (thisBr.PeekChar() == 0)
-            {
-                thisBr.ReadChar();
-            }
-        }
-
-        public static string ReadString(this BinaryReader thisBr, int maxCharCount)
-        {
-            try { 
-                byte[] bytes = thisBr.ReadBytes(maxCharCount);
-                char[] chars = new char[bytes.Length];
-                int indexOf = -1;
-                for (int i = 0; i < bytes.Length; i++)
-                {
-                    if (bytes[i] == 0)
-                    {
-                        indexOf = i;
-                        break;
-                    }
-                    else if ((bytes[i] <= 126 && bytes[i] >= 32) || bytes[i] == '\n' || bytes[i] == '\r') // sanitize toxic chars
-                        chars[i] = (char)bytes[i];
-                    else
-                        chars[i] = ' ';
-                }
-
-                //int indexOf = chars.IndexOf('\0');
-                if (indexOf != -1)
-                    return new string(chars, 0, indexOf);
-                else
-                    return new string(chars);
-            }
-            catch (Exception ex) { return "error @ position:" + thisBr.BaseStream.Position + thisBr.ReadString(20); }
-
-        }
-
-        public static char[] ReadCharsSafe(this BinaryReader thisBr, int maxCharCount)
+        public static char[] ReadCharsSafe(this BinaryReader thisBr, int maxCharCount, bool allow_LfCr = false)
         {
             try
             {
@@ -329,7 +255,7 @@ namespace Soundfont2
                         indexOf = i;
                         break;
                     }
-                    else if ((bytes[i] <= 126 && bytes[i] >= 32) || bytes[i] == '\n' || bytes[i] == '\r') // sanitize toxic chars
+                    else if ((bytes[i] <= 126 && bytes[i] >= 32) || allow_LfCr && (bytes[i] == '\n' || bytes[i] == '\r')) // sanitize toxic chars
                         chars[i] = (char)bytes[i];
                     else
                         chars[i] = ' ';
@@ -346,9 +272,18 @@ namespace Soundfont2
                 else
                     return chars;
             }
-            catch (Exception ex) { Debug.rtxt.AppendLine("ReadCharsSafe error @ position:" + thisBr.BaseStream.Position + thisBr.ReadString(20)); return "err:".ToCharArray(); }
+            catch (Exception ex) { Debug.rtxt.AppendLine("ReadCharsSafe error @ position:" + thisBr.BaseStream.Position + thisBr.ReadStringSafe(20)); return "err:".ToCharArray(); }
 
         }
 
+        public static string ReadStringSafe(this BinaryReader thisBr, int maxCharCount, bool allow_LfCr = false)
+        {
+            return new string(thisBr.ReadCharsSafe(maxCharCount, allow_LfCr));
+        }
+
+        public static string ReadStringSafeUsingLeadingSize(this BinaryReader thisBr, bool allow_LfCr = true)
+        {
+            return thisBr.ReadStringSafe((int)Convert.ToUInt32(thisBr.ReadUInt32()), allow_LfCr);
+        }
     }
 }

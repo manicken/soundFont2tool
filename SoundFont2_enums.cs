@@ -26,6 +26,7 @@ namespace Soundfont2
         leftSample = 4,
         /// <summary>Linked sample</summary>
         linkedSample = 8,
+        oggSample = 17,
         /// <summary>Mono sample, located in ROM</summary>
         RomMonoSample = 0x8001,
         /// <summary>Right sample, located in ROM</summary>

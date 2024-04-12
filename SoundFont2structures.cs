@@ -247,7 +247,7 @@ namespace Soundfont2
 
         public phdr_rec(BinaryReader br)
         {
-            achPresetName = br.ReadString(20);
+            achPresetName = br.ReadStringSafe(20);
             wPreset = br.ReadUInt16();
             wBank = br.ReadUInt16();
             wPresetBagNdx = br.ReadUInt16();
@@ -343,7 +343,7 @@ namespace Soundfont2
 
         public inst_rec(BinaryReader br)
         {
-            achInstName = br.ReadString(20);
+            achInstName = br.ReadStringSafe(20);
             wInstBagNdx = br.ReadUInt16();
         }
         public override string ToString()
@@ -373,7 +373,7 @@ namespace Soundfont2
 
         public shdr_rec(BinaryReader br)
         {
-            achSampleName = br.ReadString(20);
+            achSampleName = br.ReadStringSafe(20);
             dwStart = br.ReadUInt32();
             dwEnd = br.ReadUInt32(); ;
             dwStartloop = br.ReadUInt32();
