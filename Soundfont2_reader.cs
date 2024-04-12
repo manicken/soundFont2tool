@@ -52,14 +52,14 @@ namespace Soundfont2
             {
                 using (BinaryReader br = new BinaryReader(fs, Encoding.UTF8))
                 {
-                    string riffTag = new String(br.ReadChars(4));
+                    string riffTag = new String(br.ReadCharsSafe(4));
                     if (riffTag != "RIFF")
                     {
                         lastError = "this is not a RIFF fileformat";
                         return false;
                     }
                     fileData.sfbk.size = br.ReadUInt32();
-                    string sfbkTag = new string(br.ReadChars(4));
+                    string sfbkTag = new string(br.ReadCharsSafe(4));
                     if (sfbkTag != "sfbk")
                     {
                         lastError = "this is not sfbk fileformat";
@@ -69,14 +69,14 @@ namespace Soundfont2
                     while (br.PeekChar() != -1)
                     {
                         // every block starts with a LIST tag
-                        string listTag = new string(br.ReadChars(4));
+                        string listTag = new string(br.ReadCharsSafe(4));
                         if (listTag != "LIST")
                         {
                             lastError = "LIST item not found after " + listType;
                             return false;
                         }
                         UInt32 listSize = br.ReadUInt32();
-                        listType = new string(br.ReadChars(4));
+                        listType = new string(br.ReadCharsSafe(4));
                         if (listType == "INFO")
                         {
                             fileData.sfbk.info.size = listSize;
@@ -112,7 +112,7 @@ namespace Soundfont2
             INFO info = fileData.sfbk.info; // simplify the usage
             while (br.PeekChar() != -1)
             {
-                string type = new string(br.ReadChars(4));
+                string type = new string(br.ReadCharsSafe(4));
                 //Debug.rtxt.AppendLine("type: " + type);
                 if (type == "ifil") info.ifil = new sfVersionTag(br);
                 else if (type == "isng") info.isng = br.ReadStringUsingLeadingSize();
@@ -143,7 +143,7 @@ namespace Soundfont2
             sdta_rec sdta = fileData.sfbk.sdta; // simplify the usage
             while (br.PeekChar() != -1)
             {
-                string type = new string(br.ReadChars(4));
+                string type = new string(br.ReadCharsSafe(4));
                 //Debug.rtxt.AppendLine("sdta: " + type);
                 if (type == "smpl") {
                     sdta.smpl = new smpl_rec(br);
@@ -154,6 +154,9 @@ namespace Soundfont2
                 } else if (type == "LIST") {
                     br.BaseStream.Position -= 4; // skip back
                     return true;
+                } else
+                {
+                    Debug.rtxt.AppendLine("unknown sdta block type:" + type);
                 }
             }
             return true;
@@ -167,7 +170,7 @@ namespace Soundfont2
         
             while (br.PeekChar() != -1)
             {
-                try { type = new string(br.ReadChars(4));}
+                try { type = new string(br.ReadCharsSafe(4));}
                 catch (Exception ex) { Debug.rtxt.AppendLine(ex); return false; }
                 
 
@@ -240,15 +243,20 @@ namespace Soundfont2
     {
         public static string ReadStringUsingLeadingSize(this BinaryReader thisBr)
         {
-            int size = Convert.ToInt32(thisBr.ReadUInt32());
-            char[] charArray = thisBr.ReadChars(size);
-            int indexOfZero = charArray.IndexOf('\0');
-            string str;
-            if (indexOfZero != -1)
-                str = new string(charArray, 0, indexOfZero);
-            else
-                str = new string(charArray);
-            return str;
+            uint size = Convert.ToUInt32(thisBr.ReadUInt32());
+            //Debug.rtxt.AppendLine(size.ToString());
+            try
+            {
+                char[] charArray = thisBr.ReadCharsSafe((int)size);
+                int indexOfZero = charArray.IndexOf('\0');
+                string str;
+                if (indexOfZero != -1)
+                    str = new string(charArray, 0, indexOfZero);
+                else
+                    str = new string(charArray);
+                return str;
+            }
+            catch (Exception ex) { Debug.rtxt.AppendLine(ex.ToString()); return ""; }
         }
 
         public static string ReadZSTR_SkippingLeadingSizeAndAdditionalZeroes(this BinaryReader thisBr)
@@ -291,10 +299,10 @@ namespace Soundfont2
                         indexOf = i;
                         break;
                     }
-                    else if (bytes[i] > 126 || bytes[i] < 32) // sanitize toxic chars
-                        chars[i] = ' '; 
-                    else
+                    else if ((bytes[i] <= 126 && bytes[i] >= 32) || bytes[i] == '\n' || bytes[i] == '\r') // sanitize toxic chars
                         chars[i] = (char)bytes[i];
+                    else
+                        chars[i] = ' ';
                 }
 
                 //int indexOf = chars.IndexOf('\0');
@@ -306,5 +314,41 @@ namespace Soundfont2
             catch (Exception ex) { return "error @ position:" + thisBr.BaseStream.Position + thisBr.ReadString(20); }
 
         }
+
+        public static char[] ReadCharsSafe(this BinaryReader thisBr, int maxCharCount)
+        {
+            try
+            {
+                byte[] bytes = thisBr.ReadBytes(maxCharCount);
+                char[] chars = new char[bytes.Length];
+                int indexOf = -1;
+                for (int i = 0; i < bytes.Length; i++)
+                {
+                    if (bytes[i] == 0)
+                    {
+                        indexOf = i;
+                        break;
+                    }
+                    else if ((bytes[i] <= 126 && bytes[i] >= 32) || bytes[i] == '\n' || bytes[i] == '\r') // sanitize toxic chars
+                        chars[i] = (char)bytes[i];
+                    else
+                        chars[i] = ' ';
+                }
+
+                //int indexOf = chars.IndexOf('\0');
+                if (indexOf != -1)
+                {
+                    char[] ret = new char[indexOf];
+                    for (int i = 0; i < indexOf; i++)
+                        ret[i] = chars[i];
+                    return ret;
+                }
+                else
+                    return chars;
+            }
+            catch (Exception ex) { Debug.rtxt.AppendLine("ReadCharsSafe error @ position:" + thisBr.BaseStream.Position + thisBr.ReadString(20)); return "err:".ToCharArray(); }
+
+        }
+
     }
 }

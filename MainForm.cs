@@ -255,7 +255,7 @@ namespace Soundfont2Tool
             string filePath = "";
             using (OpenFileDialog ofd = new OpenFileDialog())
             {
-                ofd.Filter = "Soundfont2 files|*.sf2";
+                ofd.Filter = "Soundfont2 files (*.sf2)|*.sf2|Soundfont3 files (*.sf3)|*.sf3";
                 ofd.InitialDirectory = soundFontsRootDir;
                 if (ofd.ShowDialog() != DialogResult.OK) return;
                 filePath = ofd.FileName;

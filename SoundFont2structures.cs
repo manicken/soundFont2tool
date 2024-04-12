@@ -124,7 +124,7 @@ namespace Soundfont2
             ret += "Credits: " + IENG + Environment.NewLine;
             ret += "Product: " + IPRD + Environment.NewLine;
             ret += "Copyright: " + ICOP + Environment.NewLine;
-            ret += "Comment: " + ICMT + Environment.NewLine;
+            ret += "Comment: " + ICMT.Replace("\n", "\r\n") + Environment.NewLine;
             ret += "Tools: " + ISFT + Environment.NewLine;
             return ret;
         }
@@ -328,7 +328,7 @@ namespace Soundfont2
         public override string ToString()
         {
             string r = "";
-            r += $"{((ushort)sfGenOper).ToString().PadLeft(2)} {sfGenOper.ToString().PadRight(26)} = {genAmount.ToString(sfGenOper)}";
+            r += $"{((ushort)sfGenOper).ToString().PadLeft(2)} {sfGenOper.ToString().PadRight(26)} = ({genAmount.UAmount.ToString().PadLeft(5)})  {genAmount.ToString(sfGenOper)}";
             return r;
         }
     }
