@@ -6,6 +6,15 @@ using System.Windows.Forms;
 
 public static class Extensions
 {
+    public static void AddToMdiForm(this Form thisForm, Form[] forms)
+    {
+        thisForm.IsMdiContainer = true;
+        foreach (Form form in forms)
+        {
+            form.TopLevel = false;
+            thisForm.Controls.Add(form);
+        }
+    }
     public static void AppendLine(this RichTextBox thisRtxt, Exception ex)
     {
         thisRtxt.AppendText(ex.ToString() + Environment.NewLine);

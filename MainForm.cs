@@ -15,6 +15,14 @@ namespace Soundfont2Tool
 {
     public partial class MainForm : Form
     {
+        const int rtxtformInfo_Width = 320;
+        const int rtxtformLog_Width = 320;
+        const int lstboxformInst_Width = 320;
+        const int lstboxformIbag_Width = 275;
+        const int lstboxformIgen_Width = 515;
+        const int lstboxformShdr_Width = 1110;
+        const int lstboxformPhdr_Width = 750;
+
         string soundFontsRootDir = @"G:\_git\__TEENSY\SF2_SoundFonts-master";
         Soundfont2_reader sfReader;
 
@@ -28,6 +36,13 @@ namespace Soundfont2Tool
         private ListBoxForm lstboxformIgen;
         private ListBoxForm lstboxformImod;
         private ListBoxForm lstboxformShdr;
+
+
+        private Form presetDataForms;
+        private ListBoxForm lstboxformPhdr;
+        private ListBoxForm lstboxformPbag;
+        private ListBoxForm lstboxformPgen;
+        private ListBoxForm lstboxformPmod;
 
         int topOffset = 26;
         int leftOffset = 2;
@@ -53,6 +68,10 @@ namespace Soundfont2Tool
             lstboxformImod = new ListBoxForm("imod:s");
             lstboxformShdr = new ListBoxForm("shdr:s");
 
+            
+            
+            
+
             lstboxformInst.ListBoxFormItemSelected += Inst_LstBox_SelectedIndexChanged;
             lstboxformIbag.ListBoxFormItemSelected += IBAG_LstBox_SelectedIndexChanged;
             lstboxformIgen.ListBoxFormItemSelected += IGEN_LstBox_SelectedIndexChanged;
@@ -62,24 +81,47 @@ namespace Soundfont2Tool
             rtxtformInfo.Show();
             Debug.rtxt = rtxtformLog.rtxt;
             addAllToThisForm();
+
+            // preset data view
+            lstboxformPhdr = new ListBoxForm("phdr:s");
+            lstboxformPbag = new ListBoxForm("pbag:s");
+            lstboxformPgen = new ListBoxForm("pgen:s");
+            lstboxformPmod = new ListBoxForm("pmod:s");
+
+            presetDataForms = new Form();
+            presetDataForms.Text = "Presets";
+            presetDataForms.IsMdiContainer = true;
+            presetDataForms.AddToMdiForm(new Form[] { lstboxformPhdr, lstboxformPbag, lstboxformPgen, lstboxformPmod });
+            presetDataForms.FormClosing += PresetDataForms_FormClosing;
+            presetDataForms.Shown += PresetDataForms_Shown;
+        }
+
+        private void PresetDataForms_Shown(object sender, EventArgs e)
+        {
+            lstboxformPhdr.Width = rtxtformInfo_Width + lstboxformInst_Width;
+            lstboxformPgen.Width = lstboxformIgen_Width;
+            lstboxformPbag.Width = lstboxformIbag_Width;
+            lstboxformPbag.Left = lstboxformPhdr.Right;
+            lstboxformPgen.Left = lstboxformPbag.Right;
+
+            lstboxformPhdr.Height = globalHeigth;
+            lstboxformPgen.Height = globalHeigth;
+            lstboxformPbag.Height = globalHeigth;
+        }
+
+        private void PresetDataForms_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            if (e.CloseReason == CloseReason.UserClosing)
+            {
+                e.Cancel = true;
+                presetDataForms.Visible = false;
+            }
+                
         }
 
         private void addAllToThisForm()
         {
-            rtxtformLog.TopLevel = false;
-            rtxtformInfo.TopLevel = false;
-            
-            lstboxformInst.TopLevel = false;
-            lstboxformIbag.TopLevel = false;
-            lstboxformIgen.TopLevel = false;
-            lstboxformShdr.TopLevel = false;
-            this.Controls.Add(rtxtformInfo);
-            this.Controls.Add(rtxtformLog);
-            
-            this.Controls.Add(lstboxformInst);
-            this.Controls.Add(lstboxformIbag);
-            this.Controls.Add(lstboxformIgen);
-            this.Controls.Add(lstboxformShdr);
+            this.AddToMdiForm(new Form[]{ rtxtformLog, rtxtformInfo, lstboxformInst, lstboxformIbag, lstboxformIgen, lstboxformShdr });
         }
 
         bool skipIGEN_LstBox_SelectedIndexChanged = false;
@@ -215,6 +257,11 @@ namespace Soundfont2Tool
             //lstboxformImod.Show("(" + pdta.imod.Length+")", pdta.imod.GetAllToStringsAsArray());
             lstboxformShdr.Show("(" + pdta.shdr.Length + ")", pdta.shdr.GetAllToStringsAsArray());
 
+            presetDataForms.Show();
+            lstboxformPhdr.Show("(" + pdta.phdr.Length + ")", pdta.phdr.GetAllToStringsAsArray());
+            lstboxformPbag.Show("(" + pdta.pbag.Length + ")", pdta.pbag.GetAllToStringsAsArray());
+            lstboxformPgen.Show("(" + pdta.pgen.Length + ")", pdta.pgen.GetAllToStringsAsArray());
+            //lstboxformPmod.Show("(" + pdta.pmod.Length+")", pdta.pmod.GetAllToStringsAsArray());
         }
 
         public enum SFGeneratorItemType
@@ -277,6 +324,11 @@ namespace Soundfont2Tool
             this.Top -= (newHeight - this.Height) / 2;
             this.Width = newWidth;
             this.Height = newHeight;
+
+            presetDataForms.Left = this.Left;
+            presetDataForms.Top = this.Top;
+            presetDataForms.Width = newWidth;
+            presetDataForms.Height = globalHeigth + 45;
         }
 
         private void MainForm_Resize(object sender, EventArgs e)
@@ -289,19 +341,19 @@ namespace Soundfont2Tool
             rtxtformInfo.Left = leftOffset;
             rtxtformInfo.Top = topOffset;
             rtxtformInfo.Height = globalHeigth;
-            rtxtformInfo.Width = 320;
+            rtxtformInfo.Width = rtxtformInfo_Width;
             rtxtformLog.Left = leftOffset;
             rtxtformLog.Top = rtxtformInfo.Bottom;
-            rtxtformLog.Width = 320;
+            rtxtformLog.Width = rtxtformLog_Width;
             rtxtformLog.Height = globalHeigth;
 
-            lstboxformInst.Width = 320;
+            lstboxformInst.Width = lstboxformInst_Width;
             lstboxformInst.Height = globalHeigth;
-            lstboxformIbag.Width = 275;
+            lstboxformIbag.Width = lstboxformIbag_Width;
             lstboxformIbag.Height = globalHeigth;
-            lstboxformIgen.Width = 515;
+            lstboxformIgen.Width = lstboxformIgen_Width;
             lstboxformIgen.Height = globalHeigth;
-            lstboxformShdr.Width = 1110;
+            lstboxformShdr.Width = lstboxformShdr_Width;
             lstboxformShdr.Height = globalHeigth;
             lstboxformInst.Top = topOffset;
             lstboxformInst.Left = rtxtformInfo.Right;
